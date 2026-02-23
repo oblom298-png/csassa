@@ -8,8 +8,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:hidden;user-select:none;}
-
-/* ===== MAIN MENU ===== */
 #main-menu{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);z-index:100;}
 #main-menu.hidden{display:none;}
 .lego-title{font-size:28px;text-shadow:4px 4px 0 #e3000b,8px 8px 0 #006cb7;color:#FFD700;letter-spacing:2px;margin-bottom:8px;animation:glitch 2s infinite;}
@@ -20,8 +18,7 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 @keyframes loadanim{0%{width:0%}100%{width:100%}}
 @keyframes shieldPulse{0%,100%{opacity:0.6}50%{opacity:1}}
-
-.lego-panel{background:rgba(0,0,0,0.85);border:3px solid #FFD700;border-radius:8px;padding:24px;width:720px;max-width:96vw;box-shadow:0 0 30px rgba(255,215,0,0.3);}
+.lego-panel{background:rgba(0,0,0,0.85);border:3px solid #FFD700;border-radius:8px;padding:24px;width:760px;max-width:96vw;box-shadow:0 0 30px rgba(255,215,0,0.3);}
 .lego-btn{display:inline-block;background:linear-gradient(180deg,#FFD700 0%,#FFA500 60%,#cc8800 100%);color:#000;border-radius:6px;padding:10px 20px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:10px;box-shadow:0 6px 0 #884400;transition:all 0.1s;margin:4px;border:none;}
 .lego-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 #884400;}
 .lego-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #884400;}
@@ -42,15 +39,11 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 .tab-btn{background:#1a1a2e;border:2px solid #FFD700;color:#FFD700;font-family:'Press Start 2P',monospace;font-size:8px;padding:8px 16px;cursor:pointer;border-radius:4px;}
 .tab-btn.active{background:#FFD700;color:#000;}
 .tab-pane{display:none;}.tab-pane.active{display:block;}
-
-/* LEADERBOARD */
 #leaderboard-panel{position:absolute;inset:0;background:rgba(0,0,0,0.95);z-index:200;display:flex;flex-direction:column;align-items:center;padding-top:60px;}
 #leaderboard-panel.hidden{display:none;}
 .lb-table{width:600px;border-collapse:collapse;margin-top:20px;}
 .lb-table th{background:#FFD700;color:#000;padding:8px 12px;font-size:8px;}
 .lb-table td{padding:8px 12px;font-size:8px;border-bottom:1px solid #333;text-align:center;}
-
-/* TEAM SELECT */
 #team-select-modal{position:absolute;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:180;backdrop-filter:blur(8px);}
 #team-select-modal.open{display:flex;animation:fadeIn 0.2s ease;}
 .team-select-panel{background:rgba(8,8,18,0.98);border:3px solid #FFD700;border-radius:14px;padding:36px 48px;text-align:center;box-shadow:0 0 50px rgba(255,215,0,0.2);}
@@ -70,30 +63,19 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 .team-card.ct-card .team-card-name{color:#6688ff;}
 .team-card-count{font-size:7px;color:#aaa;}
 .team-card-full{font-size:7px;color:#ff4444;margin-top:4px;}
-
-/* GAME SCREEN */
+/* PASSWORD MODAL */
+#pwd-modal{position:absolute;inset:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:190;backdrop-filter:blur(8px);}
+#pwd-modal.open{display:flex;animation:fadeIn 0.2s ease;}
+.pwd-panel{background:rgba(8,8,18,0.98);border:3px solid #FFD700;border-radius:12px;padding:32px 40px;text-align:center;min-width:320px;}
+.pwd-title{font-size:12px;color:#FFD700;margin-bottom:20px;}
+#pwd-input{background:#1a1a2e;border:3px solid #FFD700;border-radius:4px;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:10px 14px;width:100%;margin:8px 0;outline:none;text-align:center;}
 #game-screen{position:absolute;inset:0;display:none;}
 #game-screen.active{display:block;}
 #game-canvas{display:block;background:#222;cursor:none;}
-
-/* ===== CHEAT MENU ===== */
-#cheat-menu{
-  position:absolute;top:10px;left:10px;
-  width:230px;min-width:170px;min-height:100px;
-  max-height:calc(100vh - 20px);
-  background:rgba(5,5,12,0.95);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(0,255,136,0.2);border-radius:12px;
-  overflow:hidden;z-index:50;display:none;
-  box-shadow:0 8px 40px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.04);
-  resize:both;
-}
+/* CHEAT MENU */
+#cheat-menu{position:absolute;top:10px;left:10px;width:230px;min-width:170px;min-height:100px;max-height:calc(100vh - 20px);background:rgba(5,5,12,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(0,255,136,0.25);border-radius:12px;overflow:hidden;z-index:50;display:none;box-shadow:0 8px 40px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.04);resize:both;}
 #cheat-menu.open{display:flex;flex-direction:column;}
-.cm-header{
-  background:rgba(8,8,18,0.99);border-bottom:1px solid rgba(0,255,136,0.1);
-  padding:9px 11px 8px;cursor:grab;flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;user-select:none;
-}
+.cm-header{background:rgba(8,8,18,0.99);border-bottom:1px solid rgba(0,255,136,0.1);padding:9px 11px 8px;cursor:grab;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;user-select:none;}
 .cm-header:active{cursor:grabbing;}
 .cm-logo{display:flex;align-items:center;gap:6px;}
 .cm-logo-icon{width:18px;height:18px;background:linear-gradient(135deg,#00ff88,#00ccff);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
@@ -135,18 +117,14 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 .cm-swatch:hover{transform:scale(1.2);}
 .cm-swatch.active{border-color:#fff;box-shadow:0 0 5px rgba(255,255,255,0.4);}
 #cheat-menu::after{content:'⠿';position:absolute;bottom:3px;right:5px;font-size:9px;color:rgba(255,255,255,0.1);pointer-events:none;line-height:1;}
-
 /* CHAT */
 #chat-container{position:absolute;bottom:76px;left:10px;width:310px;z-index:40;pointer-events:none;}
 #chat-messages{display:flex;flex-direction:column;gap:3px;margin-bottom:6px;}
 .chat-msg{font-size:8px;background:rgba(0,0,0,0.62);padding:4px 8px;border-radius:3px;max-width:100%;word-break:break-word;line-height:1.6;}
-.chat-msg.system{color:#999;}
-.chat-msg.team-t{color:#ff8888;}
-.chat-msg.team-ct{color:#8899ff;}
+.chat-msg.system{color:#999;}.chat-msg.team-t{color:#ff8888;}.chat-msg.team-ct{color:#8899ff;}
 #chat-input-wrap{pointer-events:all;display:none;background:rgba(0,0,0,0.88);border:1px solid #FFD700;border-radius:4px;padding:4px 8px;}
 #chat-input-wrap.open{display:flex;align-items:center;gap:8px;}
 #chat-input{background:transparent;border:none;color:#fff;font-family:'Press Start 2P',monospace;font-size:8px;outline:none;flex:1;}
-
 /* HUD */
 #hud-overlay{position:absolute;inset:0;pointer-events:none;z-index:30;}
 #kill-feed{position:absolute;top:60px;right:10px;display:flex;flex-direction:column;gap:4px;z-index:35;}
@@ -191,13 +169,12 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 #controls-hint{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.65);border:1px solid #555;border-radius:4px;padding:6px 10px;font-size:6px;color:#888;line-height:1.9;z-index:35;}
 #respawn-timer{position:absolute;top:120px;left:50%;transform:translateX(-50%);font-size:9px;color:#ff4444;background:rgba(0,0,0,0.78);padding:4px 12px;border-radius:4px;z-index:35;display:none;}
 #shield-notice{position:absolute;top:148px;left:50%;transform:translateX(-50%);font-size:8px;color:#00ffff;background:rgba(0,0,0,0.78);padding:4px 12px;border-radius:4px;z-index:35;display:none;border:1px solid #00ffff;}
-#loading-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;}
+#loading-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:300;}
 #loading-overlay.hidden{display:none;}
-#loading-overlay p{font-size:12px;color:#FFD700;animation:blink 1s infinite;}
+#loading-overlay p{font-size:11px;color:#FFD700;animation:blink 1s infinite;text-align:center;max-width:400px;line-height:2;}
+#loading-status{font-size:8px;color:#555;margin-top:8px;text-align:center;}
 .loading-bar{width:300px;height:6px;background:#333;border-radius:3px;margin-top:20px;overflow:hidden;}
 .loading-bar-inner{height:100%;background:linear-gradient(90deg,#FFD700,#ff8800);border-radius:3px;animation:loadanim 1.5s infinite;}
-
-/* PAUSE */
 #pause-menu{position:absolute;inset:0;background:rgba(0,0,0,0.82);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(6px);}
 #pause-menu.open{display:flex;animation:fadeIn 0.2s ease;}
 .pause-panel{background:rgba(10,10,20,0.97);border:3px solid #FFD700;border-radius:12px;padding:32px 40px;min-width:360px;text-align:center;box-shadow:0 0 40px rgba(255,215,0,0.22);}
@@ -209,8 +186,6 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 .pause-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #884400;}
 .pause-btn.red{background:linear-gradient(180deg,#ff4444,#cc2222,#991111);box-shadow:0 6px 0 #550000;color:#fff;}
 .pause-btn.blue{background:linear-gradient(180deg,#4488ff,#2255cc,#113399);box-shadow:0 6px 0 #002288;color:#fff;}
-
-/* SETTINGS */
 #settings-panel{position:absolute;inset:0;background:rgba(0,0,0,0.9);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:210;}
 #settings-panel.open{display:flex;animation:fadeIn 0.15s ease;}
 .settings-panel-box{background:rgba(10,10,20,0.98);border:3px solid #4488ff;border-radius:12px;padding:28px 36px;min-width:400px;max-height:90vh;overflow-y:auto;}
@@ -226,40 +201,35 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
 .key-bind-badge{background:#222;border:1px solid #555;border-radius:3px;padding:2px 6px;font-size:6px;color:#FFD700;}
 #screen-flash{position:absolute;inset:0;pointer-events:none;z-index:90;opacity:0;}
 #hit-indicator{position:absolute;inset:0;pointer-events:none;z-index:32;opacity:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(255,0,0,0.45) 100%);transition:opacity 0.08s;}
-/* Night mode overlay */
 #night-overlay{position:absolute;inset:0;pointer-events:none;z-index:28;background:radial-gradient(ellipse at var(--lx,50%) var(--ly,50%),rgba(0,0,0,0) 120px,rgba(0,0,20,0.88) 320px);display:none;}
 #night-overlay.active{display:block;}
 </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loading-overlay">
-  <p>CONNECTING TO SERVER...</p>
+  <p id="loading-text">CONNECTING TO SERVER...</p>
+  <div id="loading-status"></div>
   <div class="loading-bar"><div class="loading-bar-inner"></div></div>
 </div>
 
+<!-- MAIN MENU -->
 <div id="main-menu" class="hidden">
-  <!-- Telegram button top-right -->
   <div style="position:absolute;top:18px;right:24px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:200;">
     <a href="https://t.me/python_slivbl" target="_blank" rel="noopener"
-       title="Канал разработчика в Telegram"
-       style="display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;background:none;border:none;cursor:pointer;opacity:0.92;transition:opacity 0.15s,transform 0.15s;"
+       style="display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;opacity:0.92;transition:opacity 0.15s,transform 0.15s;"
        onmouseover="this.style.opacity='1';this.style.transform='scale(1.1)'"
        onmouseout="this.style.opacity='0.92';this.style.transform='scale(1)'">
-      <!-- SVG Telegram logo — no background, official colors -->
       <svg width="52" height="52" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="120" cy="120" r="120" fill="url(#tg_grad)"/>
-        <defs>
-          <linearGradient id="tg_grad" x1="120" y1="0" x2="120" y2="240" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#2AABEE"/>
-            <stop offset="100%" stop-color="#229ED9"/>
-          </linearGradient>
-        </defs>
+        <circle cx="120" cy="120" r="120" fill="url(#tg_g)"/>
+        <defs><linearGradient id="tg_g" x1="120" y1="0" x2="120" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2AABEE"/><stop offset="100%" stop-color="#229ED9"/></linearGradient></defs>
         <path d="M54 115.9c36.4-15.9 60.7-26.3 72.8-31.4 34.7-14.4 41.9-16.9 46.6-17 1 0 3.3.3 4.8 1.4 1.2.9 1.6 2.2 1.7 3.1.2 1.8.4 5.7.2 8.8-1.8 19.1-9.8 65.4-13.8 86.8-1.7 9-5 12.1-8.3 12.4-7 .6-12.3-4.6-19.1-9.1-10.6-7-16.6-11.3-26.9-18.1-11.9-7.9-4.2-12.2 2.6-19.3 1.8-1.9 32.7-30 33.3-32.6.1-.3.1-.6-.1-.9-.3-.2-.7-.1-1-.1-.4.1-7.2 4.6-20.4 13.5C111.8 121 104 125.9 99 126c-5.5.2-16.1-3.1-24-5.7-9.7-3.2-17.4-4.8-16.7-10.2.3-2.8 4.1-5.6 11.7-8.6z" fill="#fff"/>
       </svg>
-      <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#2AABEE;text-shadow:0 0 8px rgba(42,171,238,0.5);letter-spacing:0.5px;text-align:center;line-height:1.5;">КАНАЛ<br>РАЗРАБОТЧИКА</span>
+      <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#2AABEE;text-align:center;line-height:1.5;">КАНАЛ<br>РАЗРАБОТЧИКА</span>
     </a>
   </div>
+
   <div class="lego-title">CS:GO ONLINE</div>
   <div class="lego-subtitle">— C H E A T —</div>
   <div class="lego-panel">
@@ -285,15 +255,16 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
       </div>
       <div id="nickname-warning" style="font-size:7px;color:#ff4444;margin:4px 0;display:none;">⚠ Enter nickname first!</div>
       <table class="server-table">
-        <thead><tr><th>SERVER NAME</th><th>PLAYERS</th><th>T / CT</th><th>STATUS</th><th>ACTION</th></tr></thead>
+        <thead><tr><th>SERVER NAME</th><th>PLAYERS</th><th>T/CT</th><th>PWD</th><th>STATUS</th><th>ACTION</th></tr></thead>
         <tbody id="server-list-body">
-          <tr><td colspan="5" style="color:#555;font-size:8px;text-align:center;padding:20px;">No servers. Create one!</td></tr>
+          <tr><td colspan="6" style="color:#555;font-size:8px;text-align:center;padding:20px;">No servers. Create one!</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
+<!-- LEADERBOARD -->
 <div id="leaderboard-panel" class="hidden">
   <div class="lego-title" style="font-size:18px;margin-bottom:0;">🏆 LEADERBOARD</div>
   <table class="lb-table">
@@ -303,13 +274,15 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
   <button class="lego-btn" onclick="closeLeaderboard()" style="margin-top:20px;">← BACK</button>
 </div>
 
+<!-- CREATE MODAL -->
 <div id="create-modal">
-  <div class="lego-panel" style="max-width:400px;">
+  <div class="lego-panel" style="max-width:440px;">
     <div class="lego-title" style="font-size:14px;margin-bottom:16px;">CREATE SERVER</div>
     <div class="menu-label">SERVER NAME</div>
     <input class="lego-input" id="server-name-input" maxlength="32" placeholder="My Lego Server" value="Lego Arena Server"/>
-    <div class="menu-label">MAP</div>
-    <div style="font-size:8px;color:#FFD700;padding:8px;border:2px solid #FFD700;border-radius:4px;margin:8px 0;">🟨 LEGO ARENA (40×30 tiles)</div>
+    <div class="menu-label" style="margin-top:8px;">PASSWORD (optional — leave empty for public)</div>
+    <input class="lego-input" id="server-pwd-input" maxlength="20" placeholder="Leave empty = no password" type="password"/>
+    <div style="font-size:8px;color:#FFD700;padding:8px;border:2px solid #FFD700;border-radius:4px;margin:8px 0;">🟨 LEGO ARENA (40×30 tiles) | Max 10 players</div>
     <div class="menu-row" style="margin-top:16px;">
       <button class="lego-btn green" onclick="createServer()">✔ CREATE</button>
       <button class="lego-btn red" onclick="closeCreateModal()">✖ CANCEL</button>
@@ -317,7 +290,20 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
   </div>
 </div>
 
-<!-- TEAM SELECT MODAL -->
+<!-- PASSWORD PROMPT MODAL -->
+<div id="pwd-modal">
+  <div class="pwd-panel">
+    <div class="pwd-title">🔒 PASSWORD REQUIRED</div>
+    <input id="pwd-input" type="password" maxlength="20" placeholder="Enter password..."/>
+    <div class="menu-row" style="justify-content:center;margin-top:12px;">
+      <button class="lego-btn green" onclick="submitPassword()">✔ JOIN</button>
+      <button class="lego-btn red" onclick="closePwdModal()">✖ CANCEL</button>
+    </div>
+    <div id="pwd-error" style="font-size:7px;color:#ff4444;margin-top:8px;display:none;">Wrong password!</div>
+  </div>
+</div>
+
+<!-- TEAM SELECT -->
 <div id="team-select-modal">
   <div class="team-select-panel">
     <div class="team-select-title">⚔ SELECT TEAM</div>
@@ -346,7 +332,6 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
   <div id="night-overlay"></div>
   <div id="screen-flash"></div>
   <div id="hit-indicator"></div>
-
   <div id="hud-overlay">
     <div id="score-bar">
       <div class="score-box score-t">T: <span id="score-t">0</span></div>
@@ -356,23 +341,10 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
     <div id="round-timer">02:00</div>
     <div id="respawn-timer">RESPAWNING...</div>
     <div id="shield-notice">🛡 SPAWN SHIELD <span id="shield-sec">5</span>s</div>
-    <div id="controls-hint">
-      WASD — Move<br>
-      Mouse — Aim<br>
-      LMB — Shoot<br>
-      R — Reload<br>
-      1/2/3 — Weapon<br>
-      TAB — Scoreboard<br>
-      T — Chat<br>
-      ENTER — Cheats<br>
-      ESC — Pause<br>
-      /night /day — Mode
-    </div>
+    <div id="controls-hint">WASD — Move<br>Mouse — Aim<br>LMB — Shoot<br>R — Reload<br>1/2/3 — Weapon<br>TAB — Scoreboard<br>T — Chat<br>ENTER — Cheats<br>ESC — Pause<br>/night /day</div>
   </div>
-
   <div id="kill-feed"></div>
   <canvas id="minimap-canvas" width="180" height="135"></canvas>
-
   <div id="bottom-hud">
     <div class="hud-box hud-hp">❤ <span id="hud-hp">100</span></div>
     <div class="hud-box hud-ammo">🔫 <span id="hud-ammo">12</span>/<span id="hud-max-ammo">12</span></div>
@@ -381,7 +353,6 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
     <div class="hud-box hud-shield" id="hud-shield" style="display:none;">🛡 SHIELD</div>
     <div class="hud-box" style="font-size:7px;border-color:#555;">PING:<span id="hud-ping">0</span>ms</div>
   </div>
-
   <div id="chat-container">
     <div id="chat-messages"></div>
     <div id="chat-input-wrap">
@@ -390,40 +361,32 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
       <span style="font-size:7px;color:#aaa;">ENTER</span>
     </div>
   </div>
-
   <div id="scoreboard">
     <div style="font-size:10px;color:#FFD700;text-align:center;margin-bottom:12px;">📋 SCOREBOARD</div>
     <table class="sb-table">
       <thead><tr><th>NICKNAME</th><th>TEAM</th><th>K</th><th>D</th><th>K/D</th><th>PING</th></tr></thead>
       <tbody id="sb-body"></tbody>
     </table>
-    <div style="font-size:7px;color:#555;text-align:center;margin-top:10px;">Hold TAB to view</div>
   </div>
-
   <div id="round-end">
     <h2 id="round-winner"></h2>
     <p id="round-score-line"></p>
     <p id="round-next-line" style="color:#FFD700;margin-top:8px;"></p>
   </div>
-
   <div id="death-screen">
     <h2>☠ YOU DIED</h2>
     <p>Respawning in 3 seconds...</p>
   </div>
-
   <div id="weapon-picker">
     <h3>🔫 SELECT WEAPON</h3>
     <div class="weapon-card" onclick="selectWeapon('pistol')">
-      <div class="wname">🔫 PISTOL</div>
-      <div class="wstat">DMG:15 FIRE:400ms<br>MAG:12 — Reliable</div>
+      <div class="wname">🔫 PISTOL</div><div class="wstat">DMG:18 FIRE:380ms<br>MAG:12</div>
     </div>
     <div class="weapon-card" onclick="selectWeapon('ak')">
-      <div class="wname">🚀 AK-47</div>
-      <div class="wstat">DMG:22 FIRE:100ms<br>MAG:30 — High DPS</div>
+      <div class="wname">🚀 AK-47</div><div class="wstat">DMG:25 FIRE:95ms<br>MAG:30</div>
     </div>
     <div class="weapon-card" onclick="selectWeapon('awp')">
-      <div class="wname">🎯 AWP</div>
-      <div class="wstat">DMG:90 FIRE:1500ms<br>MAG:5 — One shot</div>
+      <div class="wname">🎯 AWP</div><div class="wstat">DMG:95 FIRE:1400ms<br>MAG:5</div>
     </div>
   </div>
 
@@ -432,10 +395,7 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
     <div class="cm-header" id="cm-drag-handle">
       <div class="cm-logo">
         <div class="cm-logo-icon">⚡</div>
-        <div>
-          <div class="cm-logo-text">CHEAT MENU</div>
-          <div class="cm-logo-sub">CS:GO ONLINE</div>
-        </div>
+        <div><div class="cm-logo-text">CHEAT MENU</div><div class="cm-logo-sub">CS:GO ONLINE</div></div>
       </div>
       <button class="cm-close-x" onclick="toggleCheatMenu()" title="Close [ENTER]">✕</button>
     </div>
@@ -452,7 +412,6 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
         <button class="pause-btn blue" onclick="openSettings()">⚙ SETTINGS</button>
         <button class="pause-btn red" onclick="leaveServer()">🚪 LEAVE SERVER</button>
       </div>
-      <div style="font-size:6px;color:#333;margin-top:8px;">CS:GO ONLINE — CHEAT v5.0</div>
     </div>
   </div>
 
@@ -470,24 +429,13 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
         <input type="range" class="settings-range" style="width:100%;margin-bottom:8px;" id="vol-hit" min="0" max="100" value="100" oninput="updateSettingVal('vol-hit-val',this.value+'%');settings.hitVolume=this.value/100">
       </div>
       <div class="setting-group">
-        <div class="setting-group-title">🖱 CONTROLS</div>
-        <div class="setting-row"><span class="setting-label">Mouse Sensitivity</span><span class="setting-value" id="sens-val">1.0x</span></div>
-        <input type="range" class="settings-range" style="width:100%;margin-bottom:8px;" id="sens-slider" min="1" max="30" value="10" oninput="updateSettingVal('sens-val',(this.value/10).toFixed(1)+'x');settings.sensitivity=this.value/10">
-        <div class="setting-row">
-          <span class="setting-label">Invert Mouse Y</span>
-          <label class="cm-toggle"><input type="checkbox" id="invert-y" onchange="settings.invertY=this.checked"><span class="cm-toggle-track"></span><span class="cm-toggle-thumb"></span></label>
-        </div>
-      </div>
-      <div class="setting-group">
         <div class="setting-group-title">🎮 GRAPHICS</div>
-        <div class="setting-row">
-          <span class="setting-label">Show FPS</span>
+        <div class="setting-row"><span class="setting-label">Show FPS</span>
           <label class="cm-toggle"><input type="checkbox" id="show-fps" onchange="settings.showFPS=this.checked" checked><span class="cm-toggle-track"></span><span class="cm-toggle-thumb"></span></label>
         </div>
         <div class="setting-row"><span class="setting-label">Camera Smoothing</span><span class="setting-value" id="cam-smooth-val">12%</span></div>
         <input type="range" class="settings-range" style="width:100%;margin-bottom:8px;" id="cam-smooth" min="5" max="50" value="12" oninput="updateSettingVal('cam-smooth-val',this.value+'%');settings.camSmooth=this.value/100">
-        <div class="setting-row">
-          <span class="setting-label">Particles</span>
+        <div class="setting-row"><span class="setting-label">Particles</span>
           <label class="cm-toggle"><input type="checkbox" id="show-particles" onchange="settings.particles=this.checked" checked><span class="cm-toggle-track"></span><span class="cm-toggle-thumb"></span></label>
         </div>
       </div>
@@ -509,72 +457,97 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;overflow:
   </div>
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
+<script>
+(function(){
+  function tryLoad(src,cb){
+    var s=document.createElement('script');
+    s.src=src;
+    s.onload=function(){cb(true);};
+    s.onerror=function(){cb(false);};
+    document.head.appendChild(s);
+  }
+  tryLoad('/socket.io/socket.io.js',function(ok){
+    if(!ok){
+      tryLoad('https://cdn.socket.io/4.7.5/socket.io.min.js',function(ok2){
+        if(!ok2){
+          document.getElementById('loading-text').textContent='FAILED TO LOAD SOCKET.IO';
+          document.getElementById('loading-status').textContent='Check your internet connection';
+        } else { window.initGame(); }
+      });
+    } else { window.initGame(); }
+  });
+})();
+</script>
+
 <script>
 // ================================================================
-//  CS:GO ONLINE — CHEAT  Client v6.0 — hosting-ready
-//  FIXES:
-//  1. Camera correctly follows player — no broken clamping
-//  2. Crosshair at mouse cursor, aim angle player→mouse
-//  3. Aimbot: correct FOV angle diff, smooth lerp, server validates
-//  4. Bullets black by default
-//  5. /night /day chat commands (local only)
-//  6. Spawn shield 5s (visual + server-enforced)
-//  7. Team selection modal (max 5 per team)
-//  8. Russian keyboard layout support (ЦФЫВ / Ч / Е / К etc.)
-//  9. HP bar shown for all players always
-//  10. Camera FOV feel reduced (smaller view zoom)
-//  11. Damage number particles
+//  CS:GO ONLINE — CHEAT  Client v8.0
 // ================================================================
 
-const TILE_SIZE = 32;
-const PLAYER_RADIUS = 12;
-const MAP_W_DEFAULT = 40, MAP_H_DEFAULT = 30;
+const TILE_SIZE     = 32;
+const PLAYER_RADIUS = 11;
+const MAP_W_DEF     = 40;
+const MAP_H_DEF     = 30;
 
 const WEAPONS = {
-  pistol:{ damage:15, fireRate:400,  magSize:12, reloadTime:1200, name:'Pistol' },
-  ak:    { damage:22, fireRate:100,  magSize:30, reloadTime:2200, name:'AK-47'  },
-  awp:   { damage:90, fireRate:1500, magSize:5,  reloadTime:3000, name:'AWP'    }
+  pistol:{ damage:18, fireRate:380,  magSize:12, reloadTime:1200, name:'Pistol' },
+  ak:    { damage:25, fireRate:95,   magSize:30, reloadTime:2200, name:'AK-47'  },
+  awp:   { damage:95, fireRate:1400, magSize:5,  reloadTime:2800, name:'AWP'    }
 };
 
 const SKIN_COLORS  = ['#FF4136','#0074D9','#2ECC40','#FF851B','#B10DC9','#FF69B4','#01FF70','#FFDC00'];
-const TRAIL_COLORS = ['#000000','#00FFFF','#FF4500','#FF00FF']; // 0=black default
+const TRAIL_COLORS = ['#000000','#00FFFF','#FF4500','#FF00FF'];
 const XHAIR_COLORS = ['#ff2222','#22ff22','#ffffff','#FFDC00','#00CCFF'];
-const WALL_COLORS  = ['#e3000b','#006cb7','#f5d03b','#00852b','#d67922','#9c1f96'];
-const COVER_COLORS = ['#2d8cff','#ff6b35','#ffd700','#44dd44'];
 
-// Russian → Latin key map for WASD, R, T
+// Wall palette — rich varied LEGO colours
+const WALL_PALETTES = [
+  ['#e3000b','#c80009','#ff2211'],  // red brick
+  ['#006cb7','#0055a0','#1188dd'],  // blue brick
+  ['#f5d03b','#dbb82a','#ffe055'],  // yellow brick
+  ['#00852b','#006622','#00aa33'],  // green brick
+  ['#d67922','#b85c10','#f0903a'],  // orange brick
+  ['#9c1f96','#7a1577','#c030bb'],  // purple brick
+];
+const COVER_PALETTES = [
+  ['#2255aa','#1a4488'],
+  ['#cc5500','#aa3300'],
+  ['#ccaa00','#aa8800'],
+  ['#228833','#116622'],
+];
+// Building wall palette (type 5)
+const BUILDING_PALETTES = [
+  ['#555577','#444466','#6666aa'],
+  ['#557755','#446644','#66aa66'],
+  ['#775555','#664444','#aa6666'],
+  ['#666633','#554422','#aaaa44'],
+];
+
 const RU_MAP = {
-  'ц':'w','ф':'a','ы':'s','в':'d',
-  'к':'r','е':'t',
-  'Ц':'w','Ф':'a','Ы':'s','В':'d',
-  'К':'r','Е':'t'
+  'ц':'w','ф':'a','ы':'s','в':'d','к':'r','е':'t',
+  'Ц':'w','Ф':'a','Ы':'s','В':'d','К':'r','Е':'t'
 };
 
-// ===== SETTINGS =====
+// ── Settings ────────────────────────────────────────────────────
 const settings = {
   masterVolume:0.7, shootVolume:0.8, hitVolume:1.0,
-  sensitivity:1.0, invertY:false,
   showFPS:true, camSmooth:0.12, particles:true
 };
 function loadSettings(){
-  try{
-    Object.assign(settings,JSON.parse(localStorage.getItem('csgo_settings')||'{}'));
-    document.getElementById('vol-master').value=Math.round(settings.masterVolume*100);
-    document.getElementById('vol-master-val').textContent=Math.round(settings.masterVolume*100)+'%';
-    document.getElementById('vol-shoot').value=Math.round(settings.shootVolume*100);
-    document.getElementById('vol-shoot-val').textContent=Math.round(settings.shootVolume*100)+'%';
-    document.getElementById('vol-hit').value=Math.round(settings.hitVolume*100);
-    document.getElementById('vol-hit-val').textContent=Math.round(settings.hitVolume*100)+'%';
-    document.getElementById('sens-slider').value=Math.round(settings.sensitivity*10);
-    document.getElementById('sens-val').textContent=settings.sensitivity.toFixed(1)+'x';
-    document.getElementById('cam-smooth').value=Math.round(settings.camSmooth*100);
-    document.getElementById('cam-smooth-val').textContent=Math.round(settings.camSmooth*100)+'%';
-    document.getElementById('invert-y').checked=!!settings.invertY;
-    document.getElementById('show-fps').checked=settings.showFPS!==false;
-    document.getElementById('show-particles').checked=settings.particles!==false;
-  }catch(e){}
+  try{ Object.assign(settings,JSON.parse(localStorage.getItem('csgo_settings')||'{}')); applySettingsUI(); }catch(e){}
 }
+function applySettingsUI(){
+  setEl('vol-master','value',Math.round(settings.masterVolume*100));
+  setEl('vol-master-val','textContent',Math.round(settings.masterVolume*100)+'%');
+  setEl('vol-shoot','value',Math.round(settings.shootVolume*100));
+  setEl('vol-shoot-val','textContent',Math.round(settings.shootVolume*100)+'%');
+  setEl('vol-hit','value',Math.round(settings.hitVolume*100));
+  setEl('vol-hit-val','textContent',Math.round(settings.hitVolume*100)+'%');
+  setEl('cam-smooth','value',Math.round(settings.camSmooth*100));
+  setEl('cam-smooth-val','textContent',Math.round(settings.camSmooth*100)+'%');
+  try{document.getElementById('show-fps').checked=settings.showFPS!==false;}catch(e){}
+  try{document.getElementById('show-particles').checked=settings.particles!==false;}catch(e){}
+}
+function setEl(id,prop,val){try{document.getElementById(id)[prop]=val;}catch(e){}}
 function saveSettings(){
   localStorage.setItem('csgo_settings',JSON.stringify(settings));
   closeSettings();
@@ -582,7 +555,7 @@ function saveSettings(){
 }
 function updateSettingVal(id,val){document.getElementById(id).textContent=val;}
 
-// ===== AUDIO =====
+// ── Audio ────────────────────────────────────────────────────────
 let audioCtx=null;
 function getAudio(){
   if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -591,107 +564,101 @@ function getAudio(){
 }
 function playShotSound(weapon){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*settings.shootVolume;
-    if(vol<=0)return;
-    const g=ctx.createGain();g.connect(ctx.destination);g.gain.setValueAtTime(vol,ctx.currentTime);
+    const ctx=getAudio(),vol=settings.masterVolume*settings.shootVolume; if(vol<=0)return;
+    const g=ctx.createGain(); g.connect(ctx.destination); g.gain.setValueAtTime(vol,ctx.currentTime);
     if(weapon==='awp'){
-      const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-      o.type='sawtooth';o.frequency.setValueAtTime(180,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.35);
-      g2.gain.setValueAtTime(1,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.45);
-      o.start();o.stop(ctx.currentTime+0.45);
-    }else if(weapon==='ak'){
-      const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-      o.type='square';o.frequency.setValueAtTime(250,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(80,ctx.currentTime+0.1);
-      g2.gain.setValueAtTime(0.9,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
-      o.start();o.stop(ctx.currentTime+0.12);
-    }else{
-      const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-      o.type='triangle';o.frequency.setValueAtTime(320,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(100,ctx.currentTime+0.15);
-      g2.gain.setValueAtTime(0.8,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
-      o.start();o.stop(ctx.currentTime+0.18);
+      const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+      o.type='sawtooth'; o.frequency.setValueAtTime(180,ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.35);
+      g2.gain.setValueAtTime(1,ctx.currentTime); g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.45);
+      o.start(); o.stop(ctx.currentTime+0.45);
+    } else if(weapon==='ak'){
+      const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+      o.type='square'; o.frequency.setValueAtTime(250,ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(80,ctx.currentTime+0.1);
+      g2.gain.setValueAtTime(0.9,ctx.currentTime); g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
+      o.start(); o.stop(ctx.currentTime+0.12);
+    } else {
+      const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+      o.type='triangle'; o.frequency.setValueAtTime(320,ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(100,ctx.currentTime+0.15);
+      g2.gain.setValueAtTime(0.8,ctx.currentTime); g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+      o.start(); o.stop(ctx.currentTime+0.18);
     }
   }catch(e){}
 }
 function playReloadSound(){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*0.5;if(vol<=0)return;
-    const g=ctx.createGain();g.connect(ctx.destination);g.gain.setValueAtTime(vol,ctx.currentTime);
+    const ctx=getAudio(),vol=settings.masterVolume*0.5; if(vol<=0)return;
+    const g=ctx.createGain(); g.connect(ctx.destination); g.gain.setValueAtTime(vol,ctx.currentTime);
     [0,0.15].forEach(d=>{
-      const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-      o.type='square';o.frequency.setValueAtTime(600,ctx.currentTime+d);
-      g2.gain.setValueAtTime(0.5,ctx.currentTime+d);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.07);
-      o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.07);
+      const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+      o.type='square'; o.frequency.setValueAtTime(600,ctx.currentTime+d);
+      g2.gain.setValueAtTime(0.5,ctx.currentTime+d);
+      g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.07);
+      o.start(ctx.currentTime+d); o.stop(ctx.currentTime+d+0.07);
     });
   }catch(e){}
 }
 function playHitSound(){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*settings.hitVolume*0.6;if(vol<=0)return;
-    const g=ctx.createGain();g.connect(ctx.destination);g.gain.setValueAtTime(vol,ctx.currentTime);
-    const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-    o.type='sine';o.frequency.setValueAtTime(1400,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(600,ctx.currentTime+0.06);
-    g2.gain.setValueAtTime(1,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
-    o.start();o.stop(ctx.currentTime+0.08);
+    const ctx=getAudio(),vol=settings.masterVolume*settings.hitVolume*0.6; if(vol<=0)return;
+    const g=ctx.createGain(); g.connect(ctx.destination); g.gain.setValueAtTime(vol,ctx.currentTime);
+    const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+    o.type='sine'; o.frequency.setValueAtTime(1400,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(600,ctx.currentTime+0.06);
+    g2.gain.setValueAtTime(1,ctx.currentTime); g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+    o.start(); o.stop(ctx.currentTime+0.08);
   }catch(e){}
 }
 function playDeathSound(){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*0.7;if(vol<=0)return;
-    const g=ctx.createGain();g.connect(ctx.destination);g.gain.setValueAtTime(vol,ctx.currentTime);
-    const o=ctx.createOscillator(),g2=ctx.createGain();o.connect(g2);g2.connect(g);
-    o.type='sawtooth';o.frequency.setValueAtTime(300,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.6);
-    g2.gain.setValueAtTime(1,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.65);
-    o.start();o.stop(ctx.currentTime+0.65);
+    const ctx=getAudio(),vol=settings.masterVolume*0.7; if(vol<=0)return;
+    const g=ctx.createGain(); g.connect(ctx.destination); g.gain.setValueAtTime(vol,ctx.currentTime);
+    const o=ctx.createOscillator(),g2=ctx.createGain(); o.connect(g2); g2.connect(g);
+    o.type='sawtooth'; o.frequency.setValueAtTime(300,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.6);
+    g2.gain.setValueAtTime(1,ctx.currentTime); g2.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.65);
+    o.start(); o.stop(ctx.currentTime+0.65);
   }catch(e){}
 }
 function playRoundEndSound(win){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*0.6;if(vol<=0)return;
+    const ctx=getAudio(),vol=settings.masterVolume*0.6; if(vol<=0)return;
     const notes=win?[523,659,784]:[392,330,262];
     notes.forEach((freq,i)=>{
-      const g=ctx.createGain();g.connect(ctx.destination);
+      const g=ctx.createGain(); g.connect(ctx.destination);
       g.gain.setValueAtTime(0,ctx.currentTime+i*0.15);
       g.gain.linearRampToValueAtTime(vol,ctx.currentTime+i*0.15+0.05);
       g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.25);
-      const o=ctx.createOscillator();o.connect(g);o.type='sine';
-      o.frequency.setValueAtTime(freq,ctx.currentTime+i*0.15);
-      o.start(ctx.currentTime+i*0.15);o.stop(ctx.currentTime+i*0.15+0.3);
+      const o=ctx.createOscillator(); o.connect(g);
+      o.type='sine'; o.frequency.setValueAtTime(freq,ctx.currentTime+i*0.15);
+      o.start(ctx.currentTime+i*0.15); o.stop(ctx.currentTime+i*0.15+0.3);
     });
   }catch(e){}
 }
 function playKillSound(){
   try{
-    const ctx=getAudio(),vol=settings.masterVolume*0.8;if(vol<=0)return;
+    const ctx=getAudio(),vol=settings.masterVolume*0.8; if(vol<=0)return;
     [0,0.08].forEach((d,i)=>{
-      const g=ctx.createGain();g.connect(ctx.destination);
-      g.gain.setValueAtTime(vol,ctx.currentTime+d);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.12);
-      const o=ctx.createOscillator();o.connect(g);o.type='sine';
-      o.frequency.setValueAtTime(i===0?880:1100,ctx.currentTime+d);
-      o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.12);
+      const g=ctx.createGain(); g.connect(ctx.destination);
+      g.gain.setValueAtTime(vol,ctx.currentTime+d);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.12);
+      const o=ctx.createOscillator(); o.connect(g);
+      o.type='sine'; o.frequency.setValueAtTime(i===0?880:1100,ctx.currentTime+d);
+      o.start(ctx.currentTime+d); o.stop(ctx.currentTime+d+0.12);
     });
   }catch(e){}
 }
 
-// ===== STATE =====
-let socket=null, myId=null, myTeam=null, myNickname='', currentRoomId=null;
-let pendingNickname='';    // stored while waiting for team select
-let gameState=null, mapData=null, mapW=MAP_W_DEFAULT, mapH=MAP_H_DEFAULT;
-
-// ===================================================================
-// CAMERA — the definitive correct implementation
-//
-// camX, camY = world-space coordinate of the TOP-LEFT of the viewport.
-// Target = player.renderX - W/2, player.renderY - H/2
-// After lerp, clamp ONLY if map is LARGER than screen.
-// If map is SMALLER than screen on an axis → center it (negative camX/Y is fine).
-// ===================================================================
+// ── State ────────────────────────────────────────────────────────
+let socket=null, myId=null, myTeam=null, myNickname='', currentRoomId=null, pendingNickname='';
+let pendingJoinRoomId=null; // for password prompt
+let gameState=null, mapData=null, mapW=MAP_W_DEF, mapH=MAP_H_DEF;
 let camX=0, camY=0, camReady=false;
-
 const keys={w:false,a:false,s:false,d:false};
-let mouseX=0, mouseY=0;
-let mouseDown=false, chatOpen=false, cheatMenuOpen=false, tabDown=false, paused=false;
-let nightMode=false;
-
+let mouseX=0, mouseY=0, mouseDown=false, chatOpen=false, cheatMenuOpen=false;
+let tabDown=false, paused=false, nightMode=false;
 let currentWeapon='pistol', localAmmo=12, localReloading=false, localReloadEnd=0;
 
 const cheats={
@@ -707,21 +674,21 @@ const cheats={
 let localSpinAngle=0, lastTriggerShot=0, lastShotTime=0;
 const interpPlayers=new Map(), particles=[];
 let radarState=null, lastRadarUpdate=0;
-const tileColorCache=new Map();
-let pingInterval=null;
-let fps=0, fpsCounter=0, fpsTimer=0;
-
-// Shield state (local)
+// Tile colour/texture cache — built once per map load
+const tileCache=new Map();
+let pingInterval=null, fps=0, fpsCounter=0, fpsTimer=0;
 let myShieldUntil=0;
 
-const canvas=document.getElementById('game-canvas');
-const ctx=canvas.getContext('2d');
-const minimapCanvas=document.getElementById('minimap-canvas');
-const mctx=minimapCanvas.getContext('2d');
-const nightOverlay=document.getElementById('night-overlay');
+const canvas   = document.getElementById('game-canvas');
+const ctx      = canvas.getContext('2d');
+const minimapCanvas = document.getElementById('minimap-canvas');
+const mctx     = minimapCanvas.getContext('2d');
+const nightOverlay = document.getElementById('night-overlay');
 
-// ===== INIT =====
-function init(){
+// ================================================================
+// INIT
+// ================================================================
+window.initGame = function(){
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
   buildCheatMenu();
@@ -732,173 +699,137 @@ function init(){
   loadSettings();
   startAutoRefresh();
   gameLoop();
-}
+};
+
 function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
 function loadNickname(){ const s=localStorage.getItem('csgo_nickname'); if(s) document.getElementById('nickname-input').value=s; }
 function saveNickname(n){ localStorage.setItem('csgo_nickname',n); }
 
-// ===== DRAG =====
-function makeDraggable(el, handle){
-  let ox=0, oy=0, dragging=false;
+function makeDraggable(el,handle){
+  let ox=0,oy=0,drag=false;
   handle.addEventListener('mousedown',e=>{
-    if(e.button!==0) return;
-    dragging=true; ox=e.clientX-el.offsetLeft; oy=e.clientY-el.offsetTop;
-    e.preventDefault();
+    if(e.button!==0)return; drag=true;
+    ox=e.clientX-el.offsetLeft; oy=e.clientY-el.offsetTop; e.preventDefault();
   });
   window.addEventListener('mousemove',e=>{
-    if(!dragging) return;
-    let nx=e.clientX-ox, ny=e.clientY-oy;
-    nx=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,nx));
-    ny=Math.max(0,Math.min(window.innerHeight-el.offsetHeight,ny));
+    if(!drag)return;
+    const nx=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,e.clientX-ox));
+    const ny=Math.max(0,Math.min(window.innerHeight-el.offsetHeight,e.clientY-oy));
     el.style.left=nx+'px'; el.style.top=ny+'px';
   });
-  window.addEventListener('mouseup',()=>{ dragging=false; });
+  window.addEventListener('mouseup',()=>{ drag=false; });
 }
 
-// ===== SOCKET =====
+// ================================================================
+// SOCKET
+// ================================================================
 function connectSocket(){
-  // Hosting-compatible Socket.IO options
-  // Start with polling (works everywhere), then upgrade to websocket
-  socket = io({
-    transports: ['polling', 'websocket'],
-    upgrade: true,
-    reconnection: true,
-    reconnectionAttempts: Infinity,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    timeout: 20000,
-    forceNew: false
+  const serverUrl=window.location.origin;
+  setLoadingStatus('Connecting to '+serverUrl+' ...');
+  socket=io(serverUrl,{
+    transports:['polling','websocket'],
+    upgrade:true, rememberUpgrade:false,
+    reconnection:true, reconnectionAttempts:Infinity,
+    reconnectionDelay:1500, reconnectionDelayMax:8000,
+    randomizationFactor:0.5, timeout:25000,
+    forceNew:false, withCredentials:false
   });
 
-  socket.on('connect', () => {
-    console.log('[Socket] Connected via', socket.io.engine.transport.name);
-    hideLoading();
-    showMainMenu();
-    startPingLoop();
-    // Log when transport upgrades (polling → websocket)
-    socket.io.engine.on('upgrade', () => {
-      console.log('[Socket] Upgraded to', socket.io.engine.transport.name);
-    });
+  socket.on('connect',()=>{
+    console.log('[Socket] Connected! Transport:',socket.io.engine.transport.name,'| ID:',socket.id);
+    setLoadingStatus(''); hideLoading(); showMainMenu(); startPingLoop();
+    socket.io.engine.on('upgrade',t=>console.log('[Socket] Upgraded to:',t.name));
   });
-
-  socket.on('disconnect', (reason) => {
-    console.log('[Socket] Disconnected:', reason);
+  socket.on('connect_error',err=>{
+    setLoadingText('CONNECTING...');
+    setLoadingStatus('Error: '+err.message.substring(0,60));
+  });
+  socket.on('disconnect',reason=>{
     stopPingLoop();
-    // Only show loading if not intentional disconnect
-    if (reason !== 'io client disconnect') {
-      showLoadingReconnect();
-    }
-  });
-
-  socket.on('connect_error', (err) => {
-    console.warn('[Socket] Connect error:', err.message);
-    showLoadingReconnect();
-  });
-
-  socket.on('reconnect', (attempt) => {
-    console.log('[Socket] Reconnected after', attempt, 'attempts');
-    hideLoading();
-    // If we were in a game, go back to main menu
-    if (currentRoomId) {
-      leaveServer();
+    if(reason==='io client disconnect'||reason==='io server disconnect'){
+      setLoadingText('DISCONNECTED');
     } else {
-      showMainMenu();
+      setLoadingText('RECONNECTING...');
+      setLoadingStatus('Reason: '+reason);
+      if(document.getElementById('game-screen').classList.contains('active')) showLoadingReconnect();
     }
   });
+  socket.io.on('reconnect',()=>{ hideLoading(); if(currentRoomId) leaveServer(); else showMainMenu(); });
+  socket.io.on('reconnect_attempt',n=>{ setLoadingText('RECONNECTING...'); setLoadingStatus('Attempt '+n); });
+  socket.io.on('reconnect_failed',()=>{ setLoadingText('CONNECTION FAILED'); setLoadingStatus('Refresh page.'); });
 
-  socket.on('reconnecting', (attempt) => {
-    const el = document.querySelector('#loading-overlay p');
-    if (el) el.textContent = `RECONNECTING... (${attempt})`;
+  socket.on('map_data',data=>{
+    mapData=data.map; mapW=data.mapW; mapH=data.mapH;
+    buildTileCache();
   });
-  socket.on('map_data',data=>{ mapData=data.map; mapW=data.mapW; mapH=data.mapH; buildTileColors(); });
-
-  // Server sends choose_team after join_room / create_room
-  socket.on('choose_team', data=>{
-    // CRITICAL: store roomId from choose_team so selectTeam can use it
-    if(data.roomId) currentRoomId = data.roomId;
-    openTeamSelect(data.tCount||0, data.ctCount||0);
+  socket.on('choose_team',data=>{
+    if(data.roomId) currentRoomId=data.roomId;
+    openTeamSelect(data.tCount||0,data.ctCount||0);
   });
-
-  socket.on('joined_room', data=>{
+  socket.on('joined_room',data=>{
     myId=data.playerId; myTeam=data.team;
     currentRoomId=data.roomId; myNickname=data.nickname;
     currentWeapon='pistol'; localAmmo=WEAPONS.pistol.magSize;
     localReloading=false; localReloadEnd=0;
-    camReady=false;
-    myShieldUntil=Date.now()+5000;
+    camReady=false; myShieldUntil=Date.now()+5000;
     interpPlayers.clear(); particles.length=0;
-    closeTeamSelect();
-    showGameScreen(); showWeaponPicker();
+    closeTeamSelect(); showGameScreen(); showWeaponPicker();
     document.getElementById('hud-team').textContent=data.team;
     const box=document.getElementById('hud-team-box');
     box.className='hud-box '+(data.team==='T'?'hud-team-t':'hud-team-ct');
-    addChatMsg({nickname:'SYSTEM',text:`You joined as ${data.team} — 🛡 5s spawn shield!`,system:true,t:Date.now()});
+    addChatMsg({nickname:'SYSTEM',text:'Joined as '+data.team+' — 🛡 5s shield!',system:true,t:Date.now()});
   });
-
-  socket.on('game_state', state=>{
-    const prev=gameState ? gameState.players.find(p=>p.id===myId) : null;
+  socket.on('game_state',state=>{
+    const prev=gameState?gameState.players.find(p=>p.id===myId):null;
     const cur=state.players.find(p=>p.id===myId);
-    // Detect damage taken
-    if(prev&&cur&&cur.hp<prev.hp&&cur.alive){ showHitIndicator(); spawnDmgParticle(cur.hp, prev.hp-cur.hp); }
+    if(prev&&cur&&cur.hp<prev.hp&&cur.alive){ showHitIndicator(); spawnDmgParticle(cur.hp,prev.hp-cur.hp); }
     gameState=state;
     syncInterpTargets(state);
     updateHUD(state);
     updateRadar(state);
   });
-
-  socket.on('chat_message', msg=>addChatMsg(msg));
-
-  // Local command from server
-  socket.on('local_cmd', data=>{
+  socket.on('chat_message',msg=>addChatMsg(msg));
+  socket.on('local_cmd',data=>{
     if(data.cmd==='night'){ nightMode=true; nightOverlay.classList.add('active'); addChatMsg({nickname:'SYSTEM',text:'🌙 Night mode ON',system:true,t:Date.now()}); }
     if(data.cmd==='day'){   nightMode=false; nightOverlay.classList.remove('active'); addChatMsg({nickname:'SYSTEM',text:'☀ Day mode ON',system:true,t:Date.now()}); }
   });
-
-  socket.on('kill_event', kill=>{
+  socket.on('kill_event',kill=>{
     addKillFeedEntry(kill);
     if(kill.killer===myNickname) playKillSound();
     if(kill.victim===myNickname){ playDeathSound(); screenFlash('rgba(180,0,0,0.5)',400); }
   });
-
-  socket.on('round_end', data=>{
+  socket.on('round_end',data=>{
     showRoundEnd(data);
     if(data.winner!=='Draw'){
       const iWon=(myTeam==='T'&&data.winner==='Terrorists')||(myTeam==='CT'&&data.winner==='Counter-Terrorists');
       playRoundEndSound(iWon);
     }
   });
-
-  socket.on('round_start', data=>{
+  socket.on('round_start',data=>{
     hideRoundEnd(); showWeaponPicker();
-    addChatMsg({nickname:'SYSTEM',text:`Round ${data.roundNum} started!`,system:true,t:Date.now()});
+    addChatMsg({nickname:'SYSTEM',text:'Round '+data.roundNum+' started!',system:true,t:Date.now()});
   });
 }
 
+function setLoadingText(t){ const el=document.getElementById('loading-text'); if(el) el.textContent=t; }
+function setLoadingStatus(t){ const el=document.getElementById('loading-status'); if(el) el.textContent=t; }
 function startPingLoop(){
-  stopPingLoop(); // clear any existing loop
+  stopPingLoop();
   pingInterval=setInterval(()=>{
     if(!socket||!socket.connected) return;
     const t=Date.now();
-    // Use timeout guard — on slow hosts callbacks can be delayed
-    const pingTimeout = setTimeout(()=>{
-      // Callback never came — server busy or connection slow
-    }, 5000);
-    socket.emit('ping_check', t, rt => {
-      clearTimeout(pingTimeout);
-      if(rt === undefined || rt === null) return;
-      const p = Math.max(0, Date.now() - rt);
-      socket.emit('update_ping', p);
-      const el = document.getElementById('hud-ping');
-      if(el) el.textContent = p;
+    socket.emit('ping_check',t,rt=>{
+      if(rt==null) return;
+      const p=Math.max(0,Date.now()-rt);
+      socket.emit('update_ping',p);
+      const el=document.getElementById('hud-ping'); if(el) el.textContent=p;
     });
-  }, 3000); // every 3s instead of 2s — less pressure on hosting
+  },3000);
 }
-function stopPingLoop(){
-  if(pingInterval){ clearInterval(pingInterval); pingInterval=null; }
-}
+function stopPingLoop(){ if(pingInterval){ clearInterval(pingInterval); pingInterval=null; } }
 
-// ===== TEAM SELECT =====
-function openTeamSelect(tC, ctC){
+// ── Team select ──────────────────────────────────────────────────
+function openTeamSelect(tC,ctC){
   document.getElementById('t-count').textContent=tC;
   document.getElementById('ct-count').textContent=ctC;
   const tFull=tC>=5, ctFull=ctC>=5;
@@ -906,59 +837,79 @@ function openTeamSelect(tC, ctC){
   document.getElementById('ct-full').style.display=ctFull?'block':'none';
   document.getElementById('team-card-t').classList.toggle('full-card',tFull);
   document.getElementById('team-card-ct').classList.toggle('full-card',ctFull);
-  // Always re-enable pointer events when opening
-  document.getElementById('team-card-t').style.pointerEvents = tFull ? 'none' : '';
-  document.getElementById('team-card-ct').style.pointerEvents = ctFull ? 'none' : '';
-  // Show the modal OVER main menu (don't hide main menu yet)
+  document.getElementById('team-card-t').style.pointerEvents=tFull?'none':'';
+  document.getElementById('team-card-ct').style.pointerEvents=ctFull?'none':'';
   document.getElementById('team-select-modal').classList.add('open');
 }
-function closeTeamSelect(){
-  document.getElementById('team-select-modal').classList.remove('open');
-}
+function closeTeamSelect(){ document.getElementById('team-select-modal').classList.remove('open'); }
 function selectTeam(team){
-  if(!socket){ alert('Not connected!'); return; }
-  if(!currentRoomId){ alert('Room ID missing — try rejoining'); return; }
-  // Nickname: use pending > stored > input field
-  const nick = pendingNickname || myNickname || localStorage.getItem('csgo_nickname') || '';
-  if(!nick || nick.length < 3){ alert('Nickname is missing — go back and enter one'); return; }
-  // Disable cards to prevent double-click
+  if(!socket||!socket.connected){ alert('Not connected!'); return; }
+  if(!currentRoomId){ alert('Room ID missing'); return; }
+  const nick=pendingNickname||myNickname||localStorage.getItem('csgo_nickname')||'';
+  if(!nick||nick.length<3){ alert('Nickname missing'); return; }
   document.getElementById('team-card-t').style.pointerEvents='none';
   document.getElementById('team-card-ct').style.pointerEvents='none';
-  socket.emit('select_team',{team, nickname:nick},(res)=>{
+  socket.emit('select_team',{team,nickname:nick},res=>{
     if(res&&res.error){
       alert(res.error);
-      // Re-enable cards on error
       document.getElementById('team-card-t').style.pointerEvents='';
       document.getElementById('team-card-ct').style.pointerEvents='';
-      return;
     }
-    // Success — joined_room event will arrive and open game screen
   });
 }
 
-// ===== INTERP =====
+// ── Password modal ───────────────────────────────────────────────
+function openPwdModal(roomId){
+  pendingJoinRoomId=roomId;
+  document.getElementById('pwd-error').style.display='none';
+  document.getElementById('pwd-input').value='';
+  document.getElementById('pwd-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('pwd-input').focus(),100);
+}
+function closePwdModal(){
+  document.getElementById('pwd-modal').classList.remove('open');
+  pendingJoinRoomId=null;
+}
+function submitPassword(){
+  const pwd=document.getElementById('pwd-input').value;
+  const nick=getNickname();
+  if(!nick){ alert('Enter nickname first!'); closePwdModal(); return; }
+  if(!pendingJoinRoomId) return;
+  saveNickname(nick); unlockAudio(); pendingNickname=nick;
+  socket.emit('join_room',{roomId:pendingJoinRoomId,nickname:nick,password:pwd},res=>{
+    if(res&&res.error){
+      if(res.error==='Wrong password'){
+        document.getElementById('pwd-error').style.display='block';
+      } else {
+        closePwdModal(); alert(res.error);
+      }
+    } else {
+      closePwdModal();
+    }
+  });
+}
+
+// ── Interpolation ─────────────────────────────────────────────────
 function syncInterpTargets(state){
   state.players.forEach(p=>{
     if(!interpPlayers.has(p.id)){
-      const e={...p, renderX:p.x, renderY:p.y};
-      interpPlayers.set(p.id,e);
+      interpPlayers.set(p.id,{...p,renderX:p.x,renderY:p.y});
     } else {
       const c=interpPlayers.get(p.id);
-      const wasDead=!c.alive, nowAlive=p.alive;
-      if(c.alive&&!p.alive&&settings.particles){ spawnDeathParticles(c.renderX,c.renderY); if(p.id!==myId) playHitSound(); }
-      c.x=p.x; c.y=p.y; c.angle=p.angle; c.hp=p.hp; c.alive=p.alive;
-      c.weapon=p.weapon; c.ammo=p.ammo; c.reloading=p.reloading;
-      c.kills=p.kills; c.deaths=p.deaths; c.ping=p.ping;
-      c.spinAngle=p.spinAngle; c.cheats=p.cheats; c.team=p.team; c.nickname=p.nickname;
-      c.shielded=p.shielded; c.shieldLeft=p.shieldLeft;
+      if(c.alive&&!p.alive&&settings.particles){
+        spawnDeathParticles(c.renderX,c.renderY);
+        if(p.id!==myId) playHitSound();
+      }
+      const rx=c.renderX, ry=c.renderY;
+      Object.assign(c,p);
+      c.renderX=rx; c.renderY=ry; // restore for lerp
     }
   });
   const ids=new Set(state.players.map(p=>p.id));
   interpPlayers.forEach((_,id)=>{ if(!ids.has(id)) interpPlayers.delete(id); });
 }
-
 function interpolatePlayers(){
-  const LERP=0.25;
+  const LERP=0.28;
   interpPlayers.forEach(p=>{
     if(p.renderX===undefined){ p.renderX=p.x; p.renderY=p.y; return; }
     p.renderX+=(p.x-p.renderX)*LERP;
@@ -966,305 +917,378 @@ function interpolatePlayers(){
   });
 }
 
-// ===== PARTICLES =====
+// ── Particles ─────────────────────────────────────────────────────
 function spawnDeathParticles(x,y){
-  for(let i=0;i<14;i++){
-    const a=Math.random()*Math.PI*2, spd=2+Math.random()*7;
+  for(let i=0;i<16;i++){
+    const a=Math.random()*Math.PI*2, spd=2+Math.random()*8;
     particles.push({
-      type:'death', x,y, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
-      size:4+Math.random()*7, color:SKIN_COLORS[Math.floor(Math.random()*SKIN_COLORS.length)],
+      type:'death', x, y,
+      vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
+      size:3+Math.random()*7,
+      color:SKIN_COLORS[Math.floor(Math.random()*SKIN_COLORS.length)],
       alpha:1, life:1
     });
   }
 }
-
-function spawnDmgParticle(hp, dmg){
-  // Damage number floats up near player
-  const me=interpPlayers.get(myId);
-  if(!me) return;
+function spawnDmgParticle(hp,dmg){
+  const me=interpPlayers.get(myId); if(!me) return;
   particles.push({
-    type:'dmg', x:me.renderX+(Math.random()-0.5)*20, y:me.renderY-20,
-    vy:-1.2, vx:(Math.random()-0.5)*0.8,
+    type:'dmg',
+    x:me.renderX+(Math.random()-0.5)*20,
+    y:me.renderY-20,
+    vy:-1.4, vx:(Math.random()-0.5)*0.8,
     text:'-'+dmg, alpha:1, life:1,
-    color: hp<=0?'#ff2222':dmg>=50?'#ff8800':'#ffdd00'
+    color:hp<=0?'#ff2222':dmg>=50?'#ff8800':'#ffdd00'
   });
 }
-
-function spawnHitParticles(x,y){
-  for(let i=0;i<6;i++){
-    const a=Math.random()*Math.PI*2, spd=1.5+Math.random()*4;
-    particles.push({
-      type:'hit', x,y, vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
-      size:3+Math.random()*4, color:'#ffdd44',
-      alpha:1, life:0.6
-    });
-  }
-}
-
 function updateParticles(dt){
   for(let i=particles.length-1;i>=0;i--){
     const p=particles[i];
     if(p.type==='dmg'){
-      p.x+=p.vx; p.y+=p.vy;
-      p.life-=dt*1.4; p.alpha=Math.max(0,p.life);
+      p.x+=p.vx; p.y+=p.vy; p.life-=dt*1.3; p.alpha=Math.max(0,p.life);
     } else {
-      p.x+=p.vx; p.y+=p.vy; p.vx*=0.9; p.vy*=0.9;
-      p.life-=dt*1.8; p.alpha=Math.max(0,p.life);
+      p.x+=p.vx; p.y+=p.vy; p.vx*=0.88; p.vy*=0.88;
+      p.life-=dt*1.6; p.alpha=Math.max(0,p.life);
     }
     if(p.life<=0) particles.splice(i,1);
   }
 }
 
-function buildTileColors(){
+// ── Tile texture cache ────────────────────────────────────────────
+// For each solid tile we pre-choose a colour palette index
+function buildTileCache(){
   if(!mapData) return;
+  tileCache.clear();
   for(let y=0;y<mapH;y++) for(let x=0;x<mapW;x++){
-    const t=mapData[y][x], k=`${x}_${y}`;
-    if(t===1) tileColorCache.set(k,WALL_COLORS[(x*3+y*7)%WALL_COLORS.length]);
-    if(t===4) tileColorCache.set(k,COVER_COLORS[(x*2+y*5)%COVER_COLORS.length]);
+    const t=mapData[y][x];
+    const seed=(x*31+y*17)^(x*y);
+    if(t===1) tileCache.set(x+'_'+y, seed % WALL_PALETTES.length);
+    if(t===4) tileCache.set(x+'_'+y, seed % COVER_PALETTES.length);
+    if(t===5) tileCache.set(x+'_'+y, seed % BUILDING_PALETTES.length);
   }
 }
 
-// ===== GAME LOOP =====
+// ── Game loop ─────────────────────────────────────────────────────
 let lastFrameTime=performance.now();
 function gameLoop(){
   const now=performance.now();
-  const dt=Math.min((now-lastFrameTime)/1000, 0.1);
+  const dt=Math.min((now-lastFrameTime)/1000,0.1);
   lastFrameTime=now;
   fpsCounter++; fpsTimer+=dt;
   if(fpsTimer>=1){ fps=fpsCounter; fpsCounter=0; fpsTimer=0; }
-
-  if(localReloading && Date.now()>=localReloadEnd){
+  if(localReloading&&Date.now()>=localReloadEnd){
     localReloading=false; localAmmo=WEAPONS[currentWeapon].magSize; updateAmmoHUD();
   }
-
-  if(currentRoomId && gameState && !paused){
+  if(currentRoomId&&gameState&&!paused){
     interpolatePlayers();
     if(settings.particles) updateParticles(dt);
     if(cheats.spinbot) localSpinAngle+=cheats.spinSpeed*5*Math.PI/180;
     sendInput();
     render();
   }
-
-  // Update night overlay mouse tracking
   if(nightMode){
-    nightOverlay.style.setProperty('--lx', mouseX+'px');
-    nightOverlay.style.setProperty('--ly', mouseY+'px');
+    nightOverlay.style.setProperty('--lx',mouseX+'px');
+    nightOverlay.style.setProperty('--ly',mouseY+'px');
   }
-
   requestAnimationFrame(gameLoop);
 }
 
-// ===================================================================
-// RENDER — camera ALWAYS follows player
-// ===================================================================
+// ================================================================
+// RENDER
+// ================================================================
 function render(){
   const W=canvas.width, H=canvas.height;
 
-  // --- CAMERA ---
+  // ── Camera: follow player, clamp to map ──────────────────────
   const me=interpPlayers.get(myId);
   if(me){
-    // Target: center our rendered position on screen
-    const tgX = me.renderX - W * 0.5;
-    const tgY = me.renderY - H * 0.5;
-
-    if(!camReady){
-      // First frame: snap instantly, no lerp
-      camX=tgX; camY=tgY; camReady=true;
-    } else {
-      camX += (tgX - camX) * settings.camSmooth;
-      camY += (tgY - camY) * settings.camSmooth;
-    }
-
-    // Clamp: only if map is larger than screen on that axis
-    const mapPxW = mapW * TILE_SIZE;
-    const mapPxH = mapH * TILE_SIZE;
-
-    if(mapPxW <= W){
-      // Map narrower than screen → center it
-      camX = -(W - mapPxW) / 2;
-    } else {
-      camX = Math.max(0, Math.min(camX, mapPxW - W));
-    }
-
-    if(mapPxH <= H){
-      // Map shorter than screen → center it
-      camY = -(H - mapPxH) / 2;
-    } else {
-      camY = Math.max(0, Math.min(camY, mapPxH - H));
-    }
+    const tgX=me.renderX - W*0.5;
+    const tgY=me.renderY - H*0.5;
+    if(!camReady){ camX=tgX; camY=tgY; camReady=true; }
+    else { camX+=(tgX-camX)*settings.camSmooth; camY+=(tgY-camY)*settings.camSmooth; }
+    const mpW=mapW*TILE_SIZE, mpH=mapH*TILE_SIZE;
+    // Clamp: if map smaller than screen → centre; else clamp to edges
+    camX = mpW<=W ? -(W-mpW)/2 : Math.max(0, Math.min(camX, mpW-W));
+    camY = mpH<=H ? -(H-mpH)/2 : Math.max(0, Math.min(camY, mpH-H));
   }
 
-  // Background
-  ctx.fillStyle = nightMode ? '#050510' : '#1a1a1a';
+  ctx.fillStyle=nightMode?'#050510':'#1a1a1a';
   ctx.fillRect(0,0,W,H);
 
   ctx.save();
   ctx.translate(-Math.round(camX), -Math.round(camY));
 
   drawMap();
-  if(settings.particles) drawParticlesUnder();
-  if(cheats.lineEsp && me && me.alive) drawLineESP(me);
+  if(settings.particles) drawParticlesWorld(false);
+  const meP=interpPlayers.get(myId);
+  if(cheats.lineEsp&&meP&&meP.alive) drawLineESP(meP);
   drawBullets();
-  drawPlayers(me);
-  if(settings.particles) drawParticlesOver();
+  drawPlayers(meP);
+  if(settings.particles) drawParticlesWorld(true);
 
   ctx.restore();
 
   // Screen-space HUD elements
   drawCrosshair();
   if(cheats.radarHack) drawMinimap();
-  if(me && !me.alive){ ctx.fillStyle='rgba(160,0,0,0.14)'; ctx.fillRect(0,0,W,H); }
+  if(meP&&!meP.alive){ ctx.fillStyle='rgba(160,0,0,0.14)'; ctx.fillRect(0,0,W,H); }
   if(settings.showFPS) drawFPS();
 }
 
-// ===== MAP =====
+// ── Map rendering ─────────────────────────────────────────────────
 function drawMap(){
   if(!mapData) return;
-  const sx=Math.max(0, Math.floor(camX/TILE_SIZE));
-  const sy=Math.max(0, Math.floor(camY/TILE_SIZE));
-  const ex=Math.min(mapW, Math.ceil((camX+canvas.width)/TILE_SIZE)+1);
-  const ey=Math.min(mapH, Math.ceil((camY+canvas.height)/TILE_SIZE)+1);
+  const sx=Math.max(0,Math.floor(camX/TILE_SIZE));
+  const sy=Math.max(0,Math.floor(camY/TILE_SIZE));
+  const ex=Math.min(mapW,Math.ceil((camX+canvas.width)/TILE_SIZE)+1);
+  const ey=Math.min(mapH,Math.ceil((camY+canvas.height)/TILE_SIZE)+1);
 
   for(let y=sy;y<ey;y++) for(let x=sx;x<ex;x++){
-    const t=mapData[y][x], px=x*TILE_SIZE, py=y*TILE_SIZE, k=`${x}_${y}`;
+    const t=mapData[y][x];
+    const px=x*TILE_SIZE, py=y*TILE_SIZE;
+    const k=x+'_'+y;
+    const pi=tileCache.get(k)||0;
+
     if(t===0||t===2||t===3){
-      ctx.fillStyle = nightMode ? '#1a1a2a' : '#d0d0d0';
-      ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE);
-      ctx.strokeStyle = nightMode ? '#22223a' : '#bbb';
-      ctx.lineWidth=0.5; ctx.strokeRect(px,py,TILE_SIZE,TILE_SIZE);
-      ctx.fillStyle = nightMode ? '#14142a' : '#c0c0c0';
-      ctx.beginPath(); ctx.arc(px+TILE_SIZE/2,py+TILE_SIZE/2,2.5,0,Math.PI*2); ctx.fill();
-      if(t===2){ ctx.fillStyle='rgba(255,80,80,0.18)'; ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE); }
-      if(t===3){ ctx.fillStyle='rgba(80,80,255,0.18)'; ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE); }
+      drawFloorTile(px,py,t);
     } else if(t===1){
-      drawLegoBrick(px,py,TILE_SIZE,TILE_SIZE, tileColorCache.get(k)||'#e3000b');
+      drawWallBrick(px,py,WALL_PALETTES[pi]);
     } else if(t===4){
-      ctx.fillStyle = nightMode ? '#1a1a2a' : '#d0d0d0';
-      ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE);
-      drawLegoBrick(px+2,py+2,TILE_SIZE-4,TILE_SIZE-4, tileColorCache.get(k)||'#0074D9');
+      drawFloorTile(px,py,0);
+      drawCoverBox(px,py,COVER_PALETTES[pi]);
+    } else if(t===5){
+      drawBuildingWall(px,py,BUILDING_PALETTES[pi]);
     }
   }
 }
 
-function drawLegoBrick(x,y,w,h,color){
-  ctx.fillStyle=color; ctx.fillRect(x,y,w,h);
-  ctx.fillStyle='rgba(255,255,255,0.26)'; ctx.fillRect(x,y,w,3); ctx.fillRect(x,y,3,h);
-  ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(x,y+h-3,w,3); ctx.fillRect(x+w-3,y,3,h);
-  const sr=Math.min(w,h)*0.14, rows=Math.max(1,Math.floor(h/20)), cols=Math.max(1,Math.floor(w/20));
-  ctx.fillStyle=shadeColor(color,16);
-  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
-    const bx=x+(w/(cols+1))*(c+1), by=y+(h/(rows+1))*(r+1);
-    ctx.beginPath(); ctx.arc(bx,by,sr,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.lineWidth=0.7; ctx.stroke();
-  }
-  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1; ctx.strokeRect(x,y,w,h);
+// Floor tile — realistic LEGO baseplate
+function drawFloorTile(px,py,type){
+  // Base colour
+  const baseCol = nightMode ? '#181828' : (type===2?'#2a1818':type===3?'#181828':'#c8c8c8');
+  ctx.fillStyle=baseCol;
+  ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE);
+  // Grid lines
+  ctx.strokeStyle=nightMode?'rgba(60,60,90,0.5)':'rgba(0,0,0,0.12)';
+  ctx.lineWidth=0.5;
+  ctx.strokeRect(px,py,TILE_SIZE,TILE_SIZE);
+  // Stud dot
+  ctx.fillStyle=nightMode?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.07)';
+  ctx.beginPath();
+  ctx.arc(px+TILE_SIZE/2,py+TILE_SIZE/2,3,0,Math.PI*2);
+  ctx.fill();
+  // Team spawn tint
+  if(type===2){ ctx.fillStyle='rgba(255,60,60,0.14)'; ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE); }
+  if(type===3){ ctx.fillStyle='rgba(60,60,255,0.14)'; ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE); }
 }
 
-function shadeColor(hex,p){
+// LEGO wall brick with studs
+function drawWallBrick(px,py,palette){
+  const [base,dark,light]=palette;
+  // Main face
+  ctx.fillStyle=base;
+  ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE);
+  // Highlight top-left
+  ctx.fillStyle='rgba(255,255,255,0.28)';
+  ctx.fillRect(px,py,TILE_SIZE,4);
+  ctx.fillRect(px,py,4,TILE_SIZE);
+  // Shadow bottom-right
+  ctx.fillStyle='rgba(0,0,0,0.35)';
+  ctx.fillRect(px,py+TILE_SIZE-4,TILE_SIZE,4);
+  ctx.fillRect(px+TILE_SIZE-4,py,4,TILE_SIZE);
+  // Stud circles (2x2 grid)
+  const sr=4.5;
+  ctx.fillStyle=light;
+  [[0.33,0.33],[0.67,0.33],[0.33,0.67],[0.67,0.67]].forEach(([fx,fy])=>{
+    const cx=px+fx*TILE_SIZE, cy=py+fy*TILE_SIZE;
+    ctx.beginPath(); ctx.arc(cx,cy,sr,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.8; ctx.stroke();
+    // Stud highlight
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.beginPath(); ctx.arc(cx-1,cy-1,sr*0.45,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=light;
+  });
+  // Outline
+  ctx.strokeStyle='rgba(0,0,0,0.5)';
+  ctx.lineWidth=1;
+  ctx.strokeRect(px,py,TILE_SIZE,TILE_SIZE);
+  // Mortar line between bricks (horizontal middle)
+  ctx.strokeStyle='rgba(0,0,0,0.2)';
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px,py+TILE_SIZE/2); ctx.lineTo(px+TILE_SIZE,py+TILE_SIZE/2); ctx.stroke();
+}
+
+// Cover box — smaller LEGO brick on floor
+function drawCoverBox(px,py,palette){
+  const [base,dark]=palette;
+  const margin=4;
+  const bx=px+margin, by=py+margin, bw=TILE_SIZE-margin*2, bh=TILE_SIZE-margin*2;
+  ctx.fillStyle=base; ctx.fillRect(bx,by,bw,bh);
+  ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(bx,by,bw,3); ctx.fillRect(bx,by,3,bh);
+  ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fillRect(bx,by+bh-3,bw,3); ctx.fillRect(bx+bw-3,by,3,bh);
+  // Stud
+  ctx.fillStyle=dark;
+  ctx.beginPath(); ctx.arc(bx+bw/2,by+bh/2,4,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=0.7; ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=1; ctx.strokeRect(bx,by,bw,bh);
+}
+
+// Building wall — concrete-style LEGO panel with window details
+function drawBuildingWall(px,py,palette){
+  const [base,dark,accent]=palette;
+  ctx.fillStyle=base; ctx.fillRect(px,py,TILE_SIZE,TILE_SIZE);
+  // Panel lines — give it architectural feel
+  ctx.strokeStyle=dark;
+  ctx.lineWidth=1.5;
+  // Horizontal groove
+  ctx.beginPath(); ctx.moveTo(px+2,py+TILE_SIZE*0.4); ctx.lineTo(px+TILE_SIZE-2,py+TILE_SIZE*0.4); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px+2,py+TILE_SIZE*0.7); ctx.lineTo(px+TILE_SIZE-2,py+TILE_SIZE*0.7); ctx.stroke();
+  // Vertical groove
+  ctx.beginPath(); ctx.moveTo(px+TILE_SIZE*0.5,py+2); ctx.lineTo(px+TILE_SIZE*0.5,py+TILE_SIZE-2); ctx.stroke();
+  // Highlight
+  ctx.fillStyle='rgba(255,255,255,0.15)';
+  ctx.fillRect(px,py,TILE_SIZE,3);
+  // Accent dot (bolt)
+  ctx.fillStyle=accent;
+  [[0.2,0.2],[0.8,0.2],[0.2,0.8],[0.8,0.8]].forEach(([fx,fy])=>{
+    ctx.beginPath(); ctx.arc(px+fx*TILE_SIZE,py+fy*TILE_SIZE,1.8,0,Math.PI*2); ctx.fill();
+  });
+  ctx.strokeStyle='rgba(0,0,0,0.55)'; ctx.lineWidth=1; ctx.strokeRect(px,py,TILE_SIZE,TILE_SIZE);
+}
+
+function shadeHex(hex,amt){
   const n=parseInt(hex.replace('#',''),16);
-  return `rgb(${Math.min(255,(n>>16)+p)},${Math.min(255,((n>>8)&0xff)+p)},${Math.min(255,(n&0xff)+p)})`;
+  const r=Math.min(255,Math.max(0,(n>>16)+amt));
+  const g=Math.min(255,Math.max(0,((n>>8)&0xff)+amt));
+  const b=Math.min(255,Math.max(0,(n&0xff)+amt));
+  return 'rgb('+r+','+g+','+b+')';
 }
 
-// ===== PLAYERS =====
+// ── Player rendering ──────────────────────────────────────────────
 function drawPlayers(me){
   interpPlayers.forEach((player,id)=>{
     if(!player.alive) return;
     const isMe=id===myId, isEnemy=player.team!==myTeam;
 
-    if(!isMe && player.cheats && player.cheats.fakeLag && Math.random()<0.35) return;
+    // Fake-lag skip
+    if(!isMe&&player.cheats&&player.cheats.fakeLag&&Math.random()<0.38) return;
 
     let dx=player.renderX, dy=player.renderY;
-
-    if(!isMe && player.cheats && player.cheats.antiAim){
+    // Anti-aim fake position offset
+    if(!isMe&&player.cheats&&player.cheats.antiAim){
       const ang=(Date.now()/500)%(Math.PI*2);
-      dx+=Math.cos(ang)*TILE_SIZE*0.5; dy+=Math.sin(ang)*TILE_SIZE*0.5;
+      dx+=Math.cos(ang)*TILE_SIZE*0.45; dy+=Math.sin(ang)*TILE_SIZE*0.45;
     }
 
-    // ---- Shield visual ----
-    const shielded = isMe ? Date.now()<myShieldUntil : !!player.shielded;
+    // Shield glow
+    const shielded=isMe?Date.now()<myShieldUntil:!!player.shielded;
     if(shielded){
       ctx.save();
-      ctx.strokeStyle='rgba(0,200,255,0.55)';
+      ctx.strokeStyle='rgba(0,200,255,0.6)';
       ctx.lineWidth=3;
-      ctx.shadowBlur=12; ctx.shadowColor='#00ccff';
-      ctx.beginPath(); ctx.arc(dx,dy,PLAYER_RADIUS+5,0,Math.PI*2); ctx.stroke();
+      ctx.shadowBlur=14; ctx.shadowColor='#00ccff';
+      ctx.beginPath(); ctx.arc(dx,dy,PLAYER_RADIUS+6,0,Math.PI*2); ctx.stroke();
       ctx.shadowBlur=0;
       ctx.restore();
     }
 
     // Box ESP
-    if(cheats.boxEsp && !isMe){
+    if(cheats.boxEsp&&!isMe){
       ctx.strokeStyle=isEnemy?'#ff2222':'#22ff22';
       ctx.lineWidth=1.5; ctx.setLineDash([4,2]);
-      ctx.strokeRect(dx-16,dy-16,32,32); ctx.setLineDash([]);
+      ctx.strokeRect(dx-16,dy-16,32,32);
+      ctx.setLineDash([]);
     }
 
-    // Health bar — always visible for ALL players
+    // HP bar (always visible for all players)
     {
-      const bw=30, bh=4, bx=dx-bw/2, by=dy-27;
+      const bw=30,bh=4,bx=dx-bw/2,by=dy-28;
+      ctx.fillStyle='rgba(0,0,0,0.7)'; ctx.fillRect(bx-1,by-1,bw+2,bh+2);
       ctx.fillStyle='#111'; ctx.fillRect(bx,by,bw,bh);
       const r=player.hp/100;
       ctx.fillStyle=r>0.5?'#44ff44':r>0.25?'#ffaa00':'#ff2222';
-      ctx.fillRect(bx,by,bw*r,bh);
-      ctx.strokeStyle='rgba(0,0,0,0.6)'; ctx.lineWidth=0.5; ctx.strokeRect(bx,by,bw,bh);
+      ctx.fillRect(bx,by,Math.round(bw*r),bh);
+      ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=0.5; ctx.strokeRect(bx,by,bw,bh);
     }
 
-    // Name — always visible
+    // Name (always)
     {
       ctx.font='6px "Press Start 2P"'; ctx.textAlign='center';
       ctx.fillStyle=isMe?'#FFD700':isEnemy?'#ff6666':'#66ff66';
-      ctx.fillText(player.nickname, dx, dy-31);
+      ctx.fillText(player.nickname,dx,dy-33);
     }
 
-    drawLegoFigure(player, dx, dy, isMe);
+    drawLegoFigure(player,dx,dy,isMe);
   });
 }
 
-function drawLegoFigure(player, x, y, isMe){
+// LEGO minifigure top-down
+function drawLegoFigure(player,x,y,isMe){
   const bodyColor = isMe
     ? SKIN_COLORS[cheats.skin]
     : (player.cheats ? SKIN_COLORS[player.cheats.skin||0] : (player.team==='T'?'#cc2222':'#1144cc'));
-  let angle = player.angle;
-  if(isMe && cheats.spinbot) angle=localSpinAngle;
-  else if(!isMe && player.cheats && player.cheats.spinbot) angle=player.spinAngle||0;
 
-  ctx.save(); ctx.translate(x,y); ctx.rotate(angle);
-  // shadow
-  ctx.fillStyle='rgba(0,0,0,0.22)';
+  let angle=player.angle;
+  if(isMe&&cheats.spinbot) angle=localSpinAngle;
+  else if(!isMe&&player.cheats&&player.cheats.spinbot) angle=player.spinAngle||0;
+
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(angle);
+
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
   ctx.beginPath(); ctx.ellipse(2,3,13,9,0,0,Math.PI*2); ctx.fill();
-  // body
-  ctx.fillStyle=bodyColor; ctx.fillRect(-9,-5,18,14);
-  ctx.fillStyle='rgba(255,255,255,0.16)'; ctx.fillRect(-9,-5,18,3);
-  ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.fillRect(-9,6,18,3);
-  ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=1; ctx.strokeRect(-9,-5,18,14);
-  // head
+
+  // Body
+  ctx.fillStyle=bodyColor;
+  ctx.fillRect(-9,-5,18,14);
+  // Body highlight
+  ctx.fillStyle='rgba(255,255,255,0.18)';
+  ctx.fillRect(-9,-5,18,3);
+  // Body shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.fillRect(-9,6,18,3);
+  // Body outline
+  ctx.strokeStyle='rgba(0,0,0,0.55)'; ctx.lineWidth=1;
+  ctx.strokeRect(-9,-5,18,14);
+
+  // Head (yellow LEGO head)
   ctx.fillStyle='#FFD700';
-  ctx.beginPath(); ctx.arc(-1,-8,8,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#333'; ctx.fillRect(-4,-10,2,2); ctx.fillRect(1,-10,2,2);
+  ctx.beginPath(); ctx.arc(-1,-9,8,0,Math.PI*2); ctx.fill();
+  // Face details
+  ctx.fillStyle='#333';
+  ctx.fillRect(-4,-11,2,2); ctx.fillRect(1,-11,2,2); // eyes
   ctx.strokeStyle='#333'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.arc(-1,-6,3,0.2,Math.PI-0.2); ctx.stroke();
-  // gun
-  const wl=player.weapon==='awp'?22:player.weapon==='ak'?18:14;
-  ctx.strokeStyle='#333'; ctx.lineWidth=3; ctx.lineCap='round';
-  ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(wl,0); ctx.stroke();
-  ctx.strokeStyle='#777'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(wl-2,0); ctx.stroke();
-  // stud
-  ctx.fillStyle=shadeColor('#FFD700',10);
-  ctx.beginPath(); ctx.arc(-1,-16,3,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-1,-7,3,0.2,Math.PI-0.2); ctx.stroke(); // smile
+  // Head stud
+  ctx.fillStyle=shadeHex('#FFD700',20);
+  ctx.beginPath(); ctx.arc(-1,-17,3,0,Math.PI*2); ctx.fill();
   ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=0.5; ctx.stroke();
+  // Head outline
+  ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(-1,-9,8,0,Math.PI*2); ctx.stroke();
+
+  // Weapon barrel
+  const wl=player.weapon==='awp'?22:player.weapon==='ak'?18:14;
+  ctx.strokeStyle='#222'; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(wl,0); ctx.stroke();
+  ctx.strokeStyle='#888'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(wl-2,0); ctx.stroke();
+
   ctx.restore();
 
+  // Reload indicator
   if(player.reloading){
     ctx.font='8px "Press Start 2P"'; ctx.textAlign='center';
-    ctx.fillStyle='#ffaa00'; ctx.fillText('↻',x,y-38);
+    ctx.fillStyle='#ffaa00'; ctx.fillText('↻',x,y-40);
   }
 }
 
 function drawLineESP(me){
   interpPlayers.forEach((p,id)=>{
     if(id===myId||!p.alive||p.team===myTeam) return;
-    ctx.strokeStyle='rgba(255,40,40,0.3)'; ctx.lineWidth=1; ctx.setLineDash([6,4]);
+    ctx.strokeStyle='rgba(255,40,40,0.35)'; ctx.lineWidth=1; ctx.setLineDash([6,4]);
     ctx.beginPath(); ctx.moveTo(me.renderX,me.renderY); ctx.lineTo(p.renderX,p.renderY); ctx.stroke();
     ctx.setLineDash([]);
   });
@@ -1273,57 +1297,38 @@ function drawLineESP(me){
 function drawBullets(){
   if(!gameState) return;
   gameState.bullets.forEach(b=>{
-    const t=b.trail||0;
-    ctx.shadowBlur=0; ctx.shadowColor='transparent';
-    // Trail 0 = black (default), others are colored
+    const t=b.trail||0; ctx.shadowBlur=0;
     if(t===1){ ctx.shadowBlur=8; ctx.shadowColor='#00ffff'; ctx.fillStyle='#00ffff'; }
     else if(t===2){ ctx.shadowBlur=6; ctx.shadowColor='#ff4500'; ctx.fillStyle='#ff8800'; }
-    else if(t===3){ ctx.fillStyle=`hsl(${(Date.now()/5)%360},100%,60%)`; }
-    else { ctx.fillStyle='#111'; } // black bullets default
+    else if(t===3){ ctx.fillStyle='hsl('+(Date.now()/5%360)+',100%,60%)'; }
+    else { ctx.fillStyle='#111111'; }
     ctx.fillRect(b.x-3,b.y-3,6,6);
     ctx.shadowBlur=0;
   });
 }
 
-function drawParticlesUnder(){
-  particles.forEach(p=>{
-    if(p.type==='dmg') return; // dmg particles draw over everything
-    ctx.globalAlpha=Math.max(0,p.alpha*0.5);
-    ctx.fillStyle=p.color;
-    ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
-  });
-  ctx.globalAlpha=1;
-}
-
-function drawParticlesOver(){
+function drawParticlesWorld(over){
   particles.forEach(p=>{
     if(p.type==='dmg'){
-      // Draw in screen space so we need to account for camera
+      if(!over) return;
       ctx.globalAlpha=Math.max(0,p.alpha);
-      ctx.font='bold 9px "Press Start 2P"';
-      ctx.textAlign='center';
-      ctx.fillStyle=p.color;
-      ctx.strokeStyle='#000';
-      ctx.lineWidth=2;
-      ctx.strokeText(p.text, p.x, p.y);
-      ctx.fillText(p.text, p.x, p.y);
+      ctx.font='bold 9px "Press Start 2P"'; ctx.textAlign='center';
+      ctx.fillStyle=p.color; ctx.strokeStyle='#000'; ctx.lineWidth=2;
+      ctx.strokeText(p.text,p.x,p.y); ctx.fillText(p.text,p.x,p.y);
     } else {
-      ctx.globalAlpha=Math.max(0,p.alpha);
+      ctx.globalAlpha=Math.max(0,p.alpha*(over?1:0.5));
       ctx.fillStyle=p.color;
-      const s=p.size*p.alpha;
+      const s=p.size*(over?p.alpha:1);
       ctx.fillRect(p.x-s/2,p.y-s/2,s,s);
     }
   });
   ctx.globalAlpha=1;
 }
 
-// ===================================================
-// CROSSHAIR — screen space, exactly at mouseX/mouseY
-// ===================================================
+// Crosshair — always at mouse position
 function drawCrosshair(){
   if(paused) return;
-  const color=XHAIR_COLORS[cheats.xhairColor];
-  const size=cheats.xhairSize;
+  const color=XHAIR_COLORS[cheats.xhairColor], size=cheats.xhairSize;
   const cx=mouseX, cy=mouseY;
   ctx.save();
   ctx.strokeStyle=color; ctx.lineWidth=1.5;
@@ -1334,8 +1339,7 @@ function drawCrosshair(){
   ctx.moveTo(cx,cy-size); ctx.lineTo(cx,cy-4);
   ctx.moveTo(cx,cy+4);    ctx.lineTo(cx,cy+size);
   ctx.stroke();
-  ctx.fillStyle=color;
-  ctx.beginPath(); ctx.arc(cx,cy,1.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=color; ctx.beginPath(); ctx.arc(cx,cy,1.5,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0;
   ctx.restore();
 }
@@ -1344,7 +1348,7 @@ function drawFPS(){
   ctx.font='7px "Press Start 2P"';
   ctx.fillStyle=fps>=50?'#44ff44':fps>=30?'#ffaa00':'#ff4444';
   ctx.textAlign='left';
-  ctx.fillText(`FPS:${fps}`,10,canvas.height-10);
+  ctx.fillText('FPS:'+fps, 10, canvas.height-10);
 }
 
 function drawMinimap(){
@@ -1352,11 +1356,10 @@ function drawMinimap(){
   minimapCanvas.classList.add('visible');
   const scl=minimapCanvas.width/(mapW*TILE_SIZE);
   mctx.clearRect(0,0,minimapCanvas.width,minimapCanvas.height);
-  mctx.fillStyle='rgba(0,0,0,0.85)';
-  mctx.fillRect(0,0,minimapCanvas.width,minimapCanvas.height);
+  mctx.fillStyle='rgba(0,0,0,0.87)'; mctx.fillRect(0,0,minimapCanvas.width,minimapCanvas.height);
   for(let y=0;y<mapH;y++) for(let x=0;x<mapW;x++){
     const t=mapData[y][x];
-    mctx.fillStyle=t===1?'#666':t===4?'#445':'#2a2a2a';
+    mctx.fillStyle=t===1?'#666':t===4?'#445':t===5?'#554':'#2a2a2a';
     mctx.fillRect(x*TILE_SIZE*scl,y*TILE_SIZE*scl,TILE_SIZE*scl,TILE_SIZE*scl);
   }
   radarState.forEach(p=>{
@@ -1364,7 +1367,6 @@ function drawMinimap(){
     mctx.beginPath(); mctx.arc(p.x*scl,p.y*scl,3,0,Math.PI*2); mctx.fill();
   });
 }
-
 function updateRadar(state){
   if(!cheats.radarHack){ minimapCanvas.classList.remove('visible'); return; }
   if(Date.now()-lastRadarUpdate>1500){
@@ -1373,7 +1375,6 @@ function updateRadar(state){
   }
 }
 
-// ===== HIT / FLASH =====
 let hitTimer=null;
 function showHitIndicator(){
   const el=document.getElementById('hit-indicator');
@@ -1383,28 +1384,30 @@ function showHitIndicator(){
 function screenFlash(color,dur){
   const el=document.getElementById('screen-flash');
   el.style.background=color; el.style.opacity='1'; el.style.transition='opacity 0ms';
-  setTimeout(()=>{ el.style.transition=`opacity ${dur}ms ease`; el.style.opacity='0'; },30);
+  setTimeout(()=>{ el.style.transition='opacity '+dur+'ms ease'; el.style.opacity='0'; },30);
 }
 
-// ===== CONTROLS =====
+// ── Controls ──────────────────────────────────────────────────────
 function setupControls(){
-  window.addEventListener('keydown', onKeyDown);
-  window.addEventListener('keyup',   onKeyUp);
-  canvas.addEventListener('mousemove', e=>{ mouseX=e.clientX; mouseY=e.clientY; });
-  canvas.addEventListener('mousedown', e=>{ if(e.button===0){ mouseDown=true; unlockAudio(); } });
-  canvas.addEventListener('mouseup',   e=>{ if(e.button===0) mouseDown=false; });
-  canvas.addEventListener('contextmenu', e=>e.preventDefault());
+  window.addEventListener('keydown',onKeyDown);
+  window.addEventListener('keyup',onKeyUp);
+  canvas.addEventListener('mousemove',e=>{ mouseX=e.clientX; mouseY=e.clientY; });
+  canvas.addEventListener('mousedown',e=>{ if(e.button===0){ mouseDown=true; unlockAudio(); } });
+  canvas.addEventListener('mouseup',e=>{ if(e.button===0) mouseDown=false; });
+  canvas.addEventListener('contextmenu',e=>e.preventDefault());
+  // Password modal enter key
+  document.getElementById('pwd-input').addEventListener('keydown',e=>{
+    if(e.key==='Enter') submitPassword();
+    if(e.key==='Escape') closePwdModal();
+  });
 }
 function unlockAudio(){ try{ getAudio(); }catch(e){} }
-
-// Normalise key: handle Russian layout
-function normKey(e){
-  const k=e.key;
-  if(RU_MAP[k]) return RU_MAP[k];
-  return k.toLowerCase();
-}
+function normKey(e){ const k=e.key; if(RU_MAP[k]) return RU_MAP[k]; return k.toLowerCase(); }
 
 function onKeyDown(e){
+  // Password modal intercepts everything
+  if(document.getElementById('pwd-modal').classList.contains('open')) return;
+
   if(chatOpen){
     if(e.key==='Enter') sendChatMessage();
     if(e.key==='Escape') closeChatInput();
@@ -1417,13 +1420,8 @@ function onKeyDown(e){
     if(currentRoomId) togglePause();
     return;
   }
-  if(e.key==='Enter'){
-    e.preventDefault();
-    if(paused) return;
-    toggleCheatMenu(); return;
-  }
+  if(e.key==='Enter'){ e.preventDefault(); if(paused) return; toggleCheatMenu(); return; }
   if(paused||cheatMenuOpen) return;
-
   const k=normKey(e);
   switch(k){
     case 'w': keys.w=true; break;
@@ -1450,130 +1448,114 @@ function onKeyUp(e){
   }
 }
 
-// ===== WEAPON =====
 function startReload(){
   if(!currentRoomId||localReloading) return;
-  const wep=WEAPONS[currentWeapon];
-  if(localAmmo>=wep.magSize) return;
+  const wep=WEAPONS[currentWeapon]; if(localAmmo>=wep.magSize) return;
   localReloading=true; localReloadEnd=Date.now()+wep.reloadTime;
   playReloadSound(); updateAmmoHUD();
 }
 function switchWeapon(w){
   if(currentWeapon===w) return;
-  currentWeapon=w; localAmmo=WEAPONS[w].magSize; localReloading=false; localReloadEnd=0;
+  currentWeapon=w; localAmmo=WEAPONS[w].magSize;
+  localReloading=false; localReloadEnd=0;
   updateWeaponHUD();
 }
 
-// ===================================================
-// SEND INPUT
-// Aim angle: atan2(mouseY - playerScreenY, mouseX - playerScreenX)
-// playerScreenX = player.renderX - camX  (world→screen)
-// ===================================================
+// ================================================================
+// SEND INPUT — camera-correct aim angle
+// ================================================================
 function sendInput(){
-  if(!socket||!currentRoomId||!gameState||paused) return;
-  const me=interpPlayers.get(myId);
-  if(!me||!me.alive) return;
+  if(!socket||!socket.connected||!currentRoomId||!gameState||paused) return;
+  const me=interpPlayers.get(myId); if(!me||!me.alive) return;
 
-  // Player's screen-space position
+  // Player's position on screen
   const psx = me.renderX - camX;
   const psy = me.renderY - camY;
 
-  // Aim angle from player to mouse (screen space → world angle)
-  let mouseAngle = Math.atan2(mouseY - psy, mouseX - psx);
-  let aimAngle = mouseAngle;
+  // Aim angle: screen mouse → world direction
+  let mouseAngle = Math.atan2(mouseY-psy, mouseX-psx);
+  let aimAngle   = mouseAngle;
 
-  // Aimbot — find nearest enemy in FOV around mouse angle, then lerp toward it
+  // Aimbot
   if(cheats.aimbot){
-    // Use mouseAngle as the cone center so aimbot works even before angle is corrected
-    const tgt = findAimbotTarget(me, mouseAngle);
+    const tgt=findAimbotTarget(me,mouseAngle);
     if(tgt){
-      const ta = Math.atan2(tgt.renderY - me.renderY, tgt.renderX - me.renderX);
-      // smoothness 1 = instant snap, 10 = very slow
-      const lerpFactor = cheats.aimbotSmooth <= 1 ? 1 : (1 / cheats.aimbotSmooth);
-      aimAngle = lerpAngle(mouseAngle, ta, lerpFactor);
+      const ta=Math.atan2(tgt.renderY-me.renderY, tgt.renderX-me.renderX);
+      const lerpF=cheats.aimbotSmooth<=1 ? 1 : (1/cheats.aimbotSmooth);
+      aimAngle=lerpAngle(mouseAngle, ta, lerpF);
     }
   }
 
-  // Shoot (mouse button)
-  let shouldShoot = mouseDown && !paused && !cheatMenuOpen;
+  // Shoot decision
+  let shouldShoot=mouseDown&&!paused&&!cheatMenuOpen;
 
-  // Triggerbot — runs AFTER aimbot corrects aimAngle
-  // Only fires if crosshair is physically on an enemy
-  if(cheats.triggerbot && !shouldShoot){
-    const now2 = Date.now();
-    if(now2 - lastTriggerShot > Math.max(0, cheats.triggerbotDelay)){
-      if(findTriggerTarget(me, aimAngle)){
-        shouldShoot = true;
-        lastTriggerShot = now2;
-      }
+  // Triggerbot — fires when crosshair overlaps enemy
+  if(cheats.triggerbot&&!shouldShoot){
+    const now2=Date.now();
+    if(now2-lastTriggerShot > Math.max(0,cheats.triggerbotDelay)){
+      if(findTriggerTarget(me,aimAngle)){ shouldShoot=true; lastTriggerShot=now2; }
     }
   }
 
   const now=Date.now();
   if(shouldShoot){
     const wep=WEAPONS[currentWeapon];
-    if(now-lastShotTime < wep.fireRate || localAmmo<=0 || localReloading){
+    if(now-lastShotTime<wep.fireRate||localAmmo<=0||localReloading){
       shouldShoot=false;
     } else {
-      lastShotTime=now; localAmmo=Math.max(0,localAmmo-1);
-      updateAmmoHUD(); playShotSound(currentWeapon);
+      lastShotTime=now;
+      localAmmo=Math.max(0,localAmmo-1);
+      updateAmmoHUD();
+      playShotSound(currentWeapon);
       if(localAmmo===0) startReload();
     }
   }
 
   socket.emit('player_input',{
     up:keys.w, down:keys.s, left:keys.a, right:keys.d,
-    angle:aimAngle, shoot:shouldShoot, reload:localReloading, weapon:currentWeapon,
+    angle:aimAngle,
+    shoot:shouldShoot,
+    reload:localReloading,
+    weapon:currentWeapon,
     cheats:{
       aimbot:cheats.aimbot, aimbotFOV:cheats.aimbotFOV,
       antiAim:cheats.antiAim, fakeLag:cheats.fakeLag,
       spinbot:cheats.spinbot, spinSpeed:cheats.spinSpeed,
       bhop:cheats.bhop, noRecoil:cheats.noRecoil,
-      radarHack:cheats.radarHack, skin:cheats.skin, trail:cheats.trail,
-      triggerbot:cheats.triggerbot
+      radarHack:cheats.radarHack, skin:cheats.skin, trail:cheats.trail
     }
   });
 }
 
-// Aimbot target: find closest enemy inside FOV cone around current aim angle
-// Uses a wide initial scan — FOV is the cone half-angle
-function findAimbotTarget(me, currentAngle){
+function findAimbotTarget(me,currentAngle){
   if(!gameState) return null;
   let closest=null, closestDist=Infinity;
-  // fovRad is the HALF-angle of the cone (so total cone = aimbotFOV degrees)
-  const fovRad = (cheats.aimbotFOV / 2) * Math.PI / 180;
+  const fovRad=(cheats.aimbotFOV/2)*Math.PI/180;
   interpPlayers.forEach((t,id)=>{
     if(id===myId||t.team===myTeam||!t.alive) return;
     const dx=t.renderX-me.renderX, dy=t.renderY-me.renderY;
-    const dist=Math.hypot(dx,dy);
-    if(dist < 1) return; // skip if overlapping
-    const ta=Math.atan2(dy,dx);
-    // Correct shortest-path angle difference
-    let diff=ta-currentAngle;
-    while(diff >  Math.PI) diff -= Math.PI*2;
-    while(diff < -Math.PI) diff += Math.PI*2;
-    // Check if within FOV cone
-    if(Math.abs(diff) > fovRad) return;
-    if(dist < closestDist){ closestDist=dist; closest=t; }
+    const dist=Math.hypot(dx,dy); if(dist<1) return;
+    let diff=Math.atan2(dy,dx)-currentAngle;
+    while(diff> Math.PI) diff-=Math.PI*2;
+    while(diff<-Math.PI) diff+=Math.PI*2;
+    if(Math.abs(diff)>fovRad) return;
+    if(dist<closestDist){ closestDist=dist; closest=t; }
   });
   return closest;
 }
 
-// Triggerbot: check if aim is directly on an enemy (small cone ~5°)
-function findTriggerTarget(me, aimAngle){
+function findTriggerTarget(me,aimAngle){
   let found=null;
-  const triggerFov = 0.087; // ~5 degrees in radians
   interpPlayers.forEach((t,id)=>{
     if(found||id===myId||t.team===myTeam||!t.alive) return;
     const dx=t.renderX-me.renderX, dy=t.renderY-me.renderY;
-    const dist=Math.hypot(dx,dy);
-    if(dist < 1) return;
+    const dist=Math.hypot(dx,dy); if(dist<1) return;
     let diff=Math.atan2(dy,dx)-aimAngle;
-    while(diff >  Math.PI) diff -= Math.PI*2;
-    while(diff < -Math.PI) diff += Math.PI*2;
-    // Also check physical distance — must be within player radius
-    const perpDist = Math.abs(Math.sin(diff) * dist);
-    if(perpDist < PLAYER_RADIUS && Math.abs(diff) < triggerFov) found=t;
+    while(diff> Math.PI) diff-=Math.PI*2;
+    while(diff<-Math.PI) diff+=Math.PI*2;
+    // Check perpendicular distance < player radius
+    const perpDist=Math.abs(Math.sin(diff)*dist);
+    if(perpDist<PLAYER_RADIUS+2&&Math.abs(diff)<0.12) found=t;
   });
   return found;
 }
@@ -1585,17 +1567,16 @@ function lerpAngle(a,b,t){
   return a+d*Math.min(1,t);
 }
 
-// ===== HUD =====
+// ── HUD ───────────────────────────────────────────────────────────
 function updateHUD(state){
   const t=Math.max(0,state.roundTime);
   const m=Math.floor(t/60), s=Math.floor(t%60);
   const tel=document.getElementById('round-timer');
-  tel.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  tel.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   tel.style.color=t<30?'#ff4444':'#FFD700';
   document.getElementById('score-t').textContent=state.tScore;
   document.getElementById('score-ct').textContent=state.ctScore;
   document.getElementById('round-num').textContent=state.roundNum;
-
   const me=state.players.find(p=>p.id===myId);
   if(me){
     document.getElementById('hud-hp').textContent=me.hp;
@@ -1604,12 +1585,9 @@ function updateHUD(state){
     document.getElementById('hud-weapon').textContent=WEAPONS[me.weapon].name.toUpperCase();
     document.getElementById('death-screen').classList.toggle('visible',!me.alive);
     document.getElementById('respawn-timer').style.display=me.alive?'none':'block';
-
-    // Shield HUD
-    const shielded=me.shielded;
-    document.getElementById('hud-shield').style.display=shielded?'inline-block':'none';
+    document.getElementById('hud-shield').style.display=me.shielded?'inline-block':'none';
     const sn=document.getElementById('shield-notice');
-    if(shielded){
+    if(me.shielded){
       sn.style.display='block';
       document.getElementById('shield-sec').textContent=Math.ceil((me.shieldLeft||0)/1000);
     } else {
@@ -1624,22 +1602,20 @@ function updateWeaponHUD(){
   document.getElementById('hud-max-ammo').textContent=WEAPONS[currentWeapon].magSize;
 }
 
-// ===== KILL FEED =====
 function addKillFeedEntry(kill){
   const c=document.getElementById('kill-feed');
   const d=document.createElement('div'); d.className='kill-entry';
-  d.innerHTML=`<span class="killer">${kill.killer}</span> <span class="weapon">[${kill.weapon}]</span> <span class="victim">${kill.victim}</span>`;
+  d.innerHTML='<span class="killer">'+kill.killer+'</span> <span class="weapon">['+kill.weapon+']</span> <span class="victim">'+kill.victim+'</span>';
   c.appendChild(d);
   setTimeout(()=>{ if(d.parentNode) d.parentNode.removeChild(d); },5000);
   while(c.children.length>5) c.removeChild(c.firstChild);
 }
 
-// ===== CHAT =====
 function addChatMsg(msg){
   const c=document.getElementById('chat-messages');
   const d=document.createElement('div');
-  d.className='chat-msg'+(msg.system?' system':'')+((!msg.system&&msg.team)?` team-${msg.team.toLowerCase()}`:'');
-  d.textContent=msg.system?`[SYS] ${msg.text}`:`${msg.nickname}: ${msg.text}`;
+  d.className='chat-msg'+(msg.system?' system':'')+((!msg.system&&msg.team)?' team-'+msg.team.toLowerCase():'');
+  d.textContent=msg.system?'[SYS] '+msg.text:msg.nickname+': '+msg.text;
   c.appendChild(d);
   setTimeout(()=>{ if(d.parentNode) d.parentNode.removeChild(d); },8000);
   while(c.children.length>10) c.removeChild(c.firstChild);
@@ -1656,98 +1632,88 @@ function closeChatInput(){
 }
 function sendChatMessage(){
   const inp=document.getElementById('chat-input'), text=inp.value.trim();
-  if(text && socket && currentRoomId) socket.emit('chat_message', text);
+  if(text&&socket&&currentRoomId) socket.emit('chat_message',text);
   closeChatInput();
 }
 
-// ===== SCOREBOARD =====
 function showScoreboard(){ document.getElementById('scoreboard').classList.add('visible'); }
 function hideScoreboard(){ document.getElementById('scoreboard').classList.remove('visible'); }
 function updateScoreboard(players){
   const tb=document.getElementById('sb-body'); tb.innerHTML='';
   [...players].sort((a,b)=>b.kills-a.kills).forEach(p=>{
     const kd=p.deaths===0?p.kills.toFixed(1):(p.kills/p.deaths).toFixed(2);
-    const shstr=p.shielded?'🛡':'';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="${p.team==='T'?'sb-t':'sb-ct'}">${p.nickname}${p.id===myId?' ★':''}${shstr}</td>
-      <td class="${p.team==='T'?'sb-t':'sb-ct'}">${p.team}</td>
-      <td>${p.kills}</td><td>${p.deaths}</td><td>${kd}</td><td>${p.ping}ms</td>`;
+    tr.innerHTML='<td class="'+(p.team==='T'?'sb-t':'sb-ct')+'">'+p.nickname+(p.id===myId?' ★':'')+(p.shielded?'🛡':'')+'</td>'
+      +'<td class="'+(p.team==='T'?'sb-t':'sb-ct')+'">'+p.team+'</td>'
+      +'<td>'+p.kills+'</td><td>'+p.deaths+'</td><td>'+kd+'</td><td>'+p.ping+'ms</td>';
     tb.appendChild(tr);
   });
 }
 
-// ===== ROUND =====
 function showRoundEnd(d){
-  document.getElementById('round-winner').textContent=d.winner==='Draw'?'DRAW!':`${d.winner} WIN!`;
-  document.getElementById('round-score-line').textContent=`T: ${d.tScore} | CT: ${d.ctScore}`;
-  document.getElementById('round-next-line').textContent='Next round starting soon...';
+  document.getElementById('round-winner').textContent=d.winner==='Draw'?'DRAW!':d.winner+' WIN!';
+  document.getElementById('round-score-line').textContent='T: '+d.tScore+' | CT: '+d.ctScore;
+  document.getElementById('round-next-line').textContent='Next round starting...';
   document.getElementById('round-end').classList.add('visible');
 }
 function hideRoundEnd(){ document.getElementById('round-end').classList.remove('visible'); }
 function showWeaponPicker(){ document.getElementById('weapon-picker').classList.add('visible'); }
 function selectWeapon(w){ switchWeapon(w); document.getElementById('weapon-picker').classList.remove('visible'); }
 
-// ===== CHEAT MENU =====
+// ── Cheat menu ────────────────────────────────────────────────────
 function buildCheatMenu(){
-  const body=document.getElementById('cm-body');
-  body.innerHTML='';
-
+  const body=document.getElementById('cm-body'); body.innerHTML='';
   const cats=[
-    { id:'aimbot', icon:'🎯', name:'Aimbot', items:[
+    {id:'aimbot', icon:'🎯', name:'Aimbot', items:[
       {type:'toggle',label:'Enable Aimbot',key:'aimbot'},
       {type:'slider',label:'Smoothness',key:'aimbotSmooth',min:1,max:10,step:1,fmt:v=>v},
       {type:'slider',label:'FOV',key:'aimbotFOV',min:5,max:120,step:5,fmt:v=>v+'°'}
     ]},
-    { id:'esp', icon:'👁', name:'ESP', items:[
+    {id:'esp', icon:'👁', name:'ESP', items:[
       {type:'toggle',label:'Box ESP',key:'boxEsp'},
       {type:'toggle',label:'Health Bar',key:'healthEsp'},
       {type:'toggle',label:'Name ESP',key:'nameEsp'},
       {type:'toggle',label:'Line ESP',key:'lineEsp'}
     ]},
-    { id:'hvh', icon:'⚔', name:'HvH', items:[
+    {id:'hvh', icon:'⚔', name:'HvH', items:[
       {type:'toggle',label:'Anti-Aim',key:'antiAim'},
       {type:'toggle',label:'Fake Lag',key:'fakeLag'}
     ]},
-    { id:'spinbot', icon:'🌀', name:'Spinbot', items:[
+    {id:'spinbot', icon:'🌀', name:'Spinbot', items:[
       {type:'toggle',label:'Enable',key:'spinbot'},
       {type:'slider',label:'Speed',key:'spinSpeed',min:1,max:20,step:1,fmt:v=>v}
     ]},
-    { id:'trigger', icon:'⚡', name:'Triggerbot', items:[
+    {id:'trigger', icon:'⚡', name:'Triggerbot', items:[
       {type:'toggle',label:'Enable',key:'triggerbot'},
       {type:'slider',label:'Delay (ms)',key:'triggerbotDelay',min:0,max:200,step:10,fmt:v=>v+'ms'}
     ]},
-    { id:'misc', icon:'🐰', name:'Misc', items:[
+    {id:'misc', icon:'🐰', name:'Misc', items:[
       {type:'toggle',label:'Bunny Hop',key:'bhop'},
       {type:'toggle',label:'No Recoil',key:'noRecoil'},
       {type:'toggle',label:'Radar Hack',key:'radarHack'}
     ]},
-    { id:'skin', icon:'🎨', name:'Skin', items:[
+    {id:'skin', icon:'🎨', name:'Skin', items:[
       {type:'swatches',label:'Player Color',key:'skin',colors:SKIN_COLORS},
       {type:'swatches',label:'Bullet Trail',key:'trail',colors:TRAIL_COLORS}
     ]},
-    { id:'xhair', icon:'✚', name:'Crosshair', items:[
+    {id:'xhair', icon:'✚', name:'Crosshair', items:[
       {type:'swatches',label:'Color',key:'xhairColor',colors:XHAIR_COLORS},
       {type:'slider',label:'Size',key:'xhairSize',min:6,max:28,step:1,fmt:v=>v+'px'}
     ]}
   ];
-
   cats.forEach(cat=>{
-    const catEl=document.createElement('div');
-    catEl.className='cm-cat collapsed';
-    catEl.dataset.id=cat.id;
-
+    const catEl=document.createElement('div'); catEl.className='cm-cat collapsed'; catEl.dataset.id=cat.id;
     const anyOn=cat.items.filter(i=>i.type==='toggle').some(i=>cheats[i.key]);
     const hdr=document.createElement('div'); hdr.className='cm-cat-hdr';
-    hdr.innerHTML=`<span class="cm-cat-icon">${cat.icon}</span>
-      <span class="cm-cat-name">${cat.name}</span>
-      <span class="cm-cat-badge ${anyOn?'':'off'}" id="badge-${cat.id}">${anyOn?'ON':'OFF'}</span>
-      <span class="cm-cat-arrow">▼</span>`;
+    hdr.innerHTML='<span class="cm-cat-icon">'+cat.icon+'</span>'
+      +'<span class="cm-cat-name">'+cat.name+'</span>'
+      +'<span class="cm-cat-badge '+(anyOn?'':'off')+'" id="badge-'+cat.id+'">'+(anyOn?'ON':'OFF')+'</span>'
+      +'<span class="cm-cat-arrow">▼</span>';
     hdr.onclick=()=>{
       catEl.classList.toggle('collapsed');
       hdr.querySelector('.cm-cat-arrow').textContent=catEl.classList.contains('collapsed')?'▼':'▲';
     };
     catEl.appendChild(hdr);
-
     const content=document.createElement('div'); content.className='cm-cat-content';
     cat.items.forEach(item=>{
       if(item.type==='toggle'){
@@ -1781,51 +1747,51 @@ function buildCheatMenu(){
         wrap.appendChild(lbl);
         const grid=document.createElement('div'); grid.className='cm-swatches';
         item.colors.forEach((col,i)=>{
-          const sw=document.createElement('div'); sw.className='cm-swatch'+(cheats[item.key]===i?' active':'');
+          const sw=document.createElement('div');
+          sw.className='cm-swatch'+(cheats[item.key]===i?' active':'');
           sw.style.background=col; sw.title=col;
-          sw.onclick=()=>{ cheats[item.key]=i; grid.querySelectorAll('.cm-swatch').forEach(s=>s.classList.remove('active')); sw.classList.add('active'); };
+          sw.onclick=()=>{
+            cheats[item.key]=i;
+            grid.querySelectorAll('.cm-swatch').forEach(s=>s.classList.remove('active'));
+            sw.classList.add('active');
+          };
           grid.appendChild(sw);
         });
         wrap.appendChild(grid); content.appendChild(wrap);
       }
     });
-    catEl.appendChild(content);
-    body.appendChild(catEl);
+    catEl.appendChild(content); body.appendChild(catEl);
   });
 }
-
 function updateCatBadge(cat){
-  const badge=document.getElementById('badge-'+cat.id);
-  if(!badge) return;
+  const badge=document.getElementById('badge-'+cat.id); if(!badge) return;
   const anyOn=cat.items.filter(i=>i.type==='toggle').some(i=>cheats[i.key]);
   badge.textContent=anyOn?'ON':'OFF';
   badge.className='cm-cat-badge'+(anyOn?'':' off');
 }
-
 function toggleCheatMenu(){
   if(paused) return;
   cheatMenuOpen=!cheatMenuOpen;
   document.getElementById('cheat-menu').classList.toggle('open',cheatMenuOpen);
 }
 
-// ===== PAUSE =====
+// Pause / settings
 function togglePause(){
   if(!currentRoomId) return;
   paused=!paused;
   document.getElementById('pause-menu').classList.toggle('open',paused);
   if(paused){ keys.w=keys.a=keys.s=keys.d=false; mouseDown=false; }
 }
-function resumeGame(){
-  paused=false;
-  document.getElementById('pause-menu').classList.remove('open');
-}
+function resumeGame(){ paused=false; document.getElementById('pause-menu').classList.remove('open'); }
 function leaveServer(){
   resumeGame();
   if(socket&&currentRoomId) socket.emit('leave_room');
-  currentRoomId=null; myId=null; myTeam=null; gameState=null;
-  mapData=null; interpPlayers.clear(); particles.length=0; camReady=false;
+  currentRoomId=null; myId=null; myTeam=null; gameState=null; mapData=null;
+  interpPlayers.clear(); particles.length=0; camReady=false;
   nightMode=false; nightOverlay.classList.remove('active');
-  ['round-end','weapon-picker','scoreboard','death-screen'].forEach(id=>document.getElementById(id).classList.remove('visible'));
+  ['round-end','weapon-picker','scoreboard','death-screen'].forEach(id=>
+    document.getElementById(id).classList.remove('visible')
+  );
   if(cheatMenuOpen) toggleCheatMenu();
   minimapCanvas.classList.remove('visible');
   closeTeamSelect();
@@ -1834,11 +1800,11 @@ function leaveServer(){
 function openSettings(){ document.getElementById('settings-panel').classList.add('open'); }
 function closeSettings(){ document.getElementById('settings-panel').classList.remove('open'); }
 
-// ===== MENU =====
+// ── Menu helpers ──────────────────────────────────────────────────
 function switchTab(tab,event){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
   if(event&&event.target) event.target.classList.add('active');
   if(tab==='servers') refreshServers();
 }
@@ -1848,54 +1814,51 @@ function getNickname(){
   return n;
 }
 function quickPlay(){
-  const nick=getNickname();
-  if(!nick){ alert('Enter a valid nickname (3-16 chars)'); return; }
+  const nick=getNickname(); if(!nick){ alert('Enter a valid nickname (3-16 chars)'); return; }
   saveNickname(nick); unlockAudio(); pendingNickname=nick;
-  socket.emit('get_rooms', rooms=>{
-    const av=rooms.find(r=>r.playerCount<10);
+  socket.emit('get_rooms',rooms=>{
+    const av=rooms.find(r=>r.playerCount<10&&!r.hasPassword);
     if(av){
-      socket.emit('join_room',{roomId:av.id,nickname:nick},res=>{
-        if(res&&res.error){ alert(res.error); return; }
-        // currentRoomId is set by choose_team event handler
-      });
+      socket.emit('join_room',{roomId:av.id,nickname:nick},res=>{ if(res&&res.error) alert(res.error); });
     } else {
-      socket.emit('create_room',{roomName:'Lego Arena Server',nickname:nick},res=>{
-        if(res&&res.error){ alert(res.error); return; }
-        // currentRoomId is set by choose_team event handler
-      });
+      socket.emit('create_room',{roomName:'Lego Arena Server',nickname:nick,password:''},res=>{ if(res&&res.error) alert(res.error); });
     }
   });
 }
 function refreshServers(){
-  if(!socket) return;
-  socket.emit('get_rooms', rooms=>{
+  if(!socket||!socket.connected) return;
+  socket.emit('get_rooms',rooms=>{
     const tb=document.getElementById('server-list-body');
     if(!rooms||!rooms.length){
-      tb.innerHTML='<tr><td colspan="5" style="color:#555;font-size:8px;text-align:center;padding:20px;">No servers. Create one!</td></tr>';
+      tb.innerHTML='<tr><td colspan="6" style="color:#555;font-size:8px;text-align:center;padding:20px;">No servers. Create one!</td></tr>';
       return;
     }
     tb.innerHTML='';
     rooms.forEach(r=>{
       const full=r.playerCount>=10;
+      const hasPwd=!!r.hasPassword;
       const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${r.name}</td><td>${r.playerCount}/10</td>
-        <td style="color:#ff8888;">${r.tCount||0}/5 T</td>
-        <td class="${full?'status-full':'status-ok'}">${full?'FULL':'OPEN'}</td>
-        <td><button class="lego-btn ${full?'disabled':'green'}" style="font-size:7px;padding:4px 8px;"
-          ${full?'disabled':`onclick="joinServer('${r.id}')"`}>${full?'FULL':'JOIN'}</button></td>`;
+      tr.innerHTML='<td>'+r.name+'</td>'
+        +'<td>'+r.playerCount+'/10</td>'
+        +'<td style="color:#ff8888;">'+(r.tCount||0)+'/5</td>'
+        +'<td>'+(hasPwd?'🔒':'🔓')+'</td>'
+        +'<td class="'+(full?'status-full':'status-ok')+'">'+(full?'FULL':'OPEN')+'</td>'
+        +'<td>'+(full?'<button class="lego-btn disabled" disabled>FULL</button>'
+          :'<button class="lego-btn green" style="font-size:7px;padding:4px 8px;" onclick="joinServer(\''+r.id+'\','+hasPwd+')">JOIN</button>')+'</td>';
       tb.appendChild(tr);
     });
   });
 }
-function joinServer(roomId){
+function joinServer(roomId,hasPwd){
   const nick=getNickname();
   if(!nick){ document.getElementById('nickname-warning').style.display='block'; return; }
   document.getElementById('nickname-warning').style.display='none';
   saveNickname(nick); unlockAudio(); pendingNickname=nick;
-  socket.emit('join_room',{roomId,nickname:nick},res=>{
-    if(res&&res.error){ alert(res.error); return; }
-    // currentRoomId will be set by incoming choose_team event
-  });
+  if(hasPwd){
+    openPwdModal(roomId);
+  } else {
+    socket.emit('join_room',{roomId,nickname:nick,password:''},res=>{ if(res&&res.error) alert(res.error); });
+  }
 }
 function openCreateModal(){ document.getElementById('create-modal').classList.add('open'); }
 function closeCreateModal(){ document.getElementById('create-modal').classList.remove('open'); }
@@ -1903,41 +1866,34 @@ function createServer(){
   const nick=getNickname(); if(!nick){ alert('Enter a valid nickname first!'); return; }
   saveNickname(nick); unlockAudio(); pendingNickname=nick;
   const name=document.getElementById('server-name-input').value.trim()||'Lego Arena Server';
+  const pwd=document.getElementById('server-pwd-input').value.trim();
   closeCreateModal();
-  socket.emit('create_room',{roomName:name,nickname:nick},res=>{
-    if(res&&res.error){ alert(res.error); return; }
-    // currentRoomId will be set by incoming choose_team event
-  });
+  socket.emit('create_room',{roomName:name,nickname:nick,password:pwd},res=>{ if(res&&res.error) alert(res.error); });
 }
 function openLeaderboard(){
   document.getElementById('leaderboard-panel').classList.remove('hidden');
-  socket.emit('get_leaderboard', lb=>{
+  socket.emit('get_leaderboard',lb=>{
     const tb=document.getElementById('lb-body');
-    if(!lb||!lb.length){ tb.innerHTML='<tr><td colspan="5" style="color:#555;text-align:center;padding:20px;">No data yet</td></tr>'; return; }
+    if(!lb||!lb.length){
+      tb.innerHTML='<tr><td colspan="5" style="color:#555;text-align:center;padding:20px;">No data yet</td></tr>';
+      return;
+    }
     tb.innerHTML='';
     lb.forEach((e,i)=>{
       const kd=e.deaths===0?e.kills.toFixed(1):(e.kills/e.deaths).toFixed(2);
       const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${i+1}</td><td>${e.nickname}</td><td>${e.kills}</td><td>${e.deaths}</td><td>${kd}</td>`;
+      tr.innerHTML='<td>'+(i+1)+'</td><td>'+e.nickname+'</td><td>'+e.kills+'</td><td>'+e.deaths+'</td><td>'+kd+'</td>';
       tb.appendChild(tr);
     });
   });
 }
 function closeLeaderboard(){ document.getElementById('leaderboard-panel').classList.add('hidden'); }
 
-function showLoading(){
-  const el = document.getElementById('loading-overlay');
-  el.classList.remove('hidden');
-  const p = el.querySelector('p');
-  if(p) p.textContent = 'CONNECTING TO SERVER...';
-}
-function showLoadingReconnect(){
-  const el = document.getElementById('loading-overlay');
-  el.classList.remove('hidden');
-  const p = el.querySelector('p');
-  if(p) p.textContent = 'CONNECTION LOST. RECONNECTING...';
-}
 function hideLoading(){ document.getElementById('loading-overlay').classList.add('hidden'); }
+function showLoadingReconnect(){
+  document.getElementById('loading-overlay').classList.remove('hidden');
+  setLoadingText('CONNECTION LOST. RECONNECTING...');
+}
 function showMainMenu(){
   document.getElementById('main-menu').classList.remove('hidden');
   document.getElementById('game-screen').classList.remove('active');
@@ -1954,8 +1910,6 @@ function startAutoRefresh(){
     if(t&&t.classList.contains('active')) refreshServers();
   },3000);
 }
-
-init();
 </script>
 </body>
 </html>

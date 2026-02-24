@@ -243,10 +243,10 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;user-sele
 #mobile-controls{position:absolute;inset:0;pointer-events:none;z-index:20;display:none;}
 #mobile-controls.show{display:block;}
 /* Left joystick */
-#joystick-zone{position:absolute;bottom:clamp(70px,14vw,100px);left:clamp(10px,3vw,20px);width:clamp(100px,20vw,130px);height:clamp(100px,20vw,130px);pointer-events:all;}
-#joystick-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.15);}
-#joystick-knob{position:absolute;width:44%;height:44%;top:28%;left:28%;border-radius:50%;background:rgba(255,255,255,0.25);border:2px solid rgba(255,255,255,0.4);transition:background 0.1s;}
-#joystick-knob.active{background:rgba(255,215,0,0.35);border-color:#FFD700;}
+#joystick-zone{position:absolute;bottom:clamp(70px,14vw,100px);left:clamp(10px,3vw,20px);width:clamp(110px,22vw,140px);height:clamp(110px,22vw,140px);pointer-events:all;touch-action:none;z-index:25;}
+#joystick-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.07);border:2.5px solid rgba(255,255,255,0.22);box-shadow:0 0 16px rgba(0,0,0,0.4);}
+#joystick-knob{position:absolute;width:42%;height:42%;top:29%;left:29%;border-radius:50%;background:rgba(255,255,255,0.28);border:2px solid rgba(255,255,255,0.5);transition:background 0.1s,border-color 0.1s;pointer-events:none;}
+#joystick-knob.active{background:rgba(255,215,0,0.42);border-color:#FFD700;box-shadow:0 0 14px rgba(255,215,0,0.55);}
 /* Right side buttons */
 #mobile-btns{position:absolute;bottom:clamp(70px,14vw,100px);right:clamp(10px,3vw,20px);display:flex;flex-direction:column;gap:clamp(6px,1.5vw,10px);pointer-events:all;}
 .mob-btn{width:clamp(52px,10vw,64px);height:clamp(52px,10vw,64px);border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.8vw,11px);cursor:pointer;touch-action:manipulation;user-select:none;font-family:'Press Start 2P',monospace;text-align:center;line-height:1.2;-webkit-tap-highlight-color:transparent;}
@@ -673,6 +673,8 @@ let pingInterval=null,fps=0,fpsCounter=0,fpsTimer=0,myShieldUntil=0;
 const joy={active:false,id:-1,startX:0,startY:0,dx:0,dy:0};
 const aimTouch={active:false,id:-1,x:0,y:0,lastX:0,lastY:0};
 let mobShoot=false,mobShootId=-1;
+// joystick base center in page coords (set after layout)
+let joyBaseX=0,joyBaseY=0,joyBaseR=55;
 
 const canvas=document.getElementById('game-canvas');
 const ctx=canvas.getContext('2d');
@@ -823,85 +825,162 @@ function setupMobileControls(){
   const mc=document.getElementById('mobile-controls');
   mc.classList.add('show');
   document.getElementById('mob-cheat-btn').classList.add('show');
-  // Hide desktop hint
   document.getElementById('controls-hint').style.display='none';
 
   const jZone=document.getElementById('joystick-zone');
   const jKnob=document.getElementById('joystick-knob');
-  const jBase=document.getElementById('joystick-base');
-  const R=jZone.offsetWidth/2||55;
+
+  // ── Recalculate joystick center after layout ──────────────────
+  function recalcJoy(){
+    const rect=jZone.getBoundingClientRect();
+    joyBaseX=rect.left+rect.width/2;
+    joyBaseY=rect.top+rect.height/2;
+    joyBaseR=rect.width/2||55;
+  }
+  // Recalc now and on resize/orientation change
+  recalcJoy();
+  // Center knob after layout is confirmed
+  requestAnimationFrame(()=>{ recalcJoy(); joyReset(); });
+  window.addEventListener('resize',()=>{ recalcJoy(); joyReset(); });
+  window.addEventListener('orientationchange',()=>setTimeout(()=>{ recalcJoy(); joyReset(); },300));
 
   function joyMove(tx,ty){
-    const rect=jZone.getBoundingClientRect();
-    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    let dx=tx-cx, dy=ty-cy;
+    let dx=tx-joyBaseX, dy=ty-joyBaseY;
     const dist=Math.hypot(dx,dy);
-    if(dist>R){dx=dx/dist*R;dy=dy/dist*R;}
-    jKnob.style.left=(50+dx/R*34)+'%';
-    jKnob.style.top=(50+dy/R*34)+'%';
-    joy.dx=dx/R; joy.dy=dy/R;
+    if(dist>joyBaseR){dx=dx/dist*joyBaseR;dy=dy/dist*joyBaseR;}
+    // Use absolute px positioning relative to jZone top-left
+    const rect=jZone.getBoundingClientRect();
+    // knob center should be at (joyBaseX+dx, joyBaseY+dy) in page coords
+    // convert to jZone-local coords: subtract rect.left/top, then offset by half-knob
+    const knobW=jZone.offsetWidth*0.42;  // matches CSS 42%
+    const localX=(joyBaseX+dx-rect.left)-(knobW/2);
+    const localY=(joyBaseY+dy-rect.top) -(knobW/2);
+    jKnob.style.left=localX+'px';
+    jKnob.style.top= localY+'px';
+    joy.dx=dx/joyBaseR;
+    joy.dy=dy/joyBaseR;
     jKnob.classList.add('active');
   }
   function joyReset(){
-    jKnob.style.left='28%';jKnob.style.top='28%';
+    // reset knob to center using px
+    const zW=jZone.offsetWidth, zH=jZone.offsetHeight;
+    const knobW=zW*0.42, knobH=zH*0.42;
+    jKnob.style.left=((zW-knobW)/2)+'px';
+    jKnob.style.top= ((zH-knobH)/2)+'px';
     joy.dx=0;joy.dy=0;joy.active=false;joy.id=-1;
     jKnob.classList.remove('active');
   }
 
-  // Aim zone — touch turns into aim angle
-  const aimZone=document.getElementById('aim-zone');
+  // ── Helper: is point inside joystick zone? ────────────────────
+  function inJoyZone(x,y){
+    return Math.hypot(x-joyBaseX,y-joyBaseY)<=joyBaseR*1.4;
+  }
 
-  // Canvas touch for aim + shoot combined
+  // ── JOYSTICK — direct listeners on jZone (most reliable) ─────
+  jZone.addEventListener('touchstart',e=>{
+    e.preventDefault();e.stopPropagation();
+    unlockAudio();
+    const t=e.changedTouches[0];
+    if(joy.id===-1){
+      joy.active=true;joy.id=t.identifier;
+      joyMove(t.clientX,t.clientY);
+    }
+  },{passive:false});
+
+  jZone.addEventListener('touchmove',e=>{
+    e.preventDefault();e.stopPropagation();
+    Array.from(e.changedTouches).forEach(t=>{
+      if(t.identifier===joy.id)joyMove(t.clientX,t.clientY);
+    });
+  },{passive:false});
+
+  jZone.addEventListener('touchend',e=>{
+    e.preventDefault();e.stopPropagation();
+    Array.from(e.changedTouches).forEach(t=>{
+      if(t.identifier===joy.id)joyReset();
+    });
+  },{passive:false});
+
+  jZone.addEventListener('touchcancel',e=>{
+    e.preventDefault();
+    joyReset();
+  },{passive:false});
+
+  // ── CANVAS — aim tracking only (not joystick area) ────────────
   canvas.addEventListener('touchstart',e=>{
     e.preventDefault();
     unlockAudio();
     Array.from(e.changedTouches).forEach(t=>{
       const x=t.clientX,y=t.clientY;
-      const jRect=jZone.getBoundingClientRect();
-      // Check if in joystick zone
-      const inJoy=x>=jRect.left&&x<=jRect.right&&y>=jRect.top&&y<=jRect.bottom;
-      if(inJoy){
-        joy.active=true;joy.id=t.identifier;joy.startX=x;joy.startY=y;
-        joyMove(x,y);return;
-      }
-      // Shoot button area (right 40% of screen, lower half)
-      const inMobBtns=x>window.innerWidth*0.6&&y>window.innerHeight*0.45;
-      if(!inMobBtns){
-        // Aim zone — track for mouse angle
-        if(!aimTouch.active){
-          aimTouch.active=true;aimTouch.id=t.identifier;
-          aimTouch.x=x;aimTouch.y=y;aimTouch.lastX=x;aimTouch.lastY=y;
-          mouseX=x;mouseY=y;
-        }
+      // skip if this touch is in joystick zone — handled by jZone
+      if(inJoyZone(x,y))return;
+      // skip right-side button area
+      const inBtns=x>window.innerWidth*0.62&&y>window.innerHeight*0.42;
+      if(inBtns)return;
+      // aim tracking
+      if(!aimTouch.active){
+        aimTouch.active=true;aimTouch.id=t.identifier;
+        mouseX=x;mouseY=y;
       }
     });
   },{passive:false});
+
   canvas.addEventListener('touchmove',e=>{
     e.preventDefault();
     Array.from(e.changedTouches).forEach(t=>{
-      if(t.identifier===joy.id){joyMove(t.clientX,t.clientY);}
-      else if(t.identifier===aimTouch.id){
-        aimTouch.x=t.clientX;aimTouch.y=t.clientY;
+      if(inJoyZone(t.clientX,t.clientY)&&t.identifier===joy.id){
+        joyMove(t.clientX,t.clientY);return;
+      }
+      if(t.identifier===aimTouch.id){
         mouseX=t.clientX;mouseY=t.clientY;
       }
     });
   },{passive:false});
+
   canvas.addEventListener('touchend',e=>{
+    e.preventDefault();
     Array.from(e.changedTouches).forEach(t=>{
-      if(t.identifier===joy.id)joyReset();
-      if(t.identifier===aimTouch.id){aimTouch.active=false;aimTouch.id=-1;}
+      if(t.identifier===aimTouch.id){
+        aimTouch.active=false;aimTouch.id=-1;
+      }
     });
-  });
+  },{passive:false});
 
-  // Shoot button
+  canvas.addEventListener('touchcancel',e=>{
+    e.preventDefault();
+    aimTouch.active=false;aimTouch.id=-1;
+  },{passive:false});
+
+  // ── SHOOT button ──────────────────────────────────────────────
   const mobShootBtn=document.getElementById('mob-shoot');
-  mobShootBtn.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();mouseDown=true;mobShoot=true;unlockAudio();mobShootBtn.classList.add('firing');},{passive:false});
-  mobShootBtn.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();mouseDown=false;mobShoot=false;mobShootBtn.classList.remove('firing');},{passive:false});
+  mobShootBtn.addEventListener('touchstart',e=>{
+    e.preventDefault();e.stopPropagation();
+    mouseDown=true;mobShoot=true;
+    unlockAudio();
+    mobShootBtn.classList.add('firing');
+  },{passive:false});
+  mobShootBtn.addEventListener('touchend',e=>{
+    e.preventDefault();e.stopPropagation();
+    mouseDown=false;mobShoot=false;
+    mobShootBtn.classList.remove('firing');
+  },{passive:false});
+  mobShootBtn.addEventListener('touchcancel',e=>{
+    e.preventDefault();
+    mouseDown=false;mobShoot=false;
+    mobShootBtn.classList.remove('firing');
+  },{passive:false});
 
-  // Reload button
+  // ── RELOAD button ─────────────────────────────────────────────
   const mobReloadBtn=document.getElementById('mob-reload');
-  mobReloadBtn.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();startReload();mobReloadBtn.classList.add('active');},{passive:false});
-  mobReloadBtn.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();mobReloadBtn.classList.remove('active');},{passive:false});
+  mobReloadBtn.addEventListener('touchstart',e=>{
+    e.preventDefault();e.stopPropagation();
+    startReload();
+    mobReloadBtn.classList.add('active');
+  },{passive:false});
+  mobReloadBtn.addEventListener('touchend',e=>{
+    e.preventDefault();e.stopPropagation();
+    mobReloadBtn.classList.remove('active');
+  },{passive:false});
 }
 
 function updateMobWeapon(){
@@ -920,8 +999,14 @@ function gameLoop(){
   fpsCounter++;fpsTimer+=dt;
   if(fpsTimer>=1){fps=fpsCounter;fpsCounter=0;fpsTimer=0;}
   if(localReloading&&Date.now()>=localReloadEnd){localReloading=false;localAmmo=WEAPONS[currentWeapon].magSize;updateAmmoHUD();}
-  // Apply mobile joystick to keys
-  if(isMobile()){keys.w=joy.dy<-0.3;keys.s=joy.dy>0.3;keys.a=joy.dx<-0.3;keys.d=joy.dx>0.3;}
+  // Apply mobile joystick to keys (deadzone 0.2)
+  if(isMobile()){
+    const DZ=0.2;
+    keys.w=joy.dy<-DZ;
+    keys.s=joy.dy> DZ;
+    keys.a=joy.dx<-DZ;
+    keys.d=joy.dx> DZ;
+  }
   if(currentRoomId&&gameState&&!paused){
     interpolatePlayers();
     if(settings.particles)updateParticles(dt);

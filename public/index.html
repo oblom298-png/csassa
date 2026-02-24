@@ -242,30 +242,163 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;user-sele
 /* ── MOBILE CONTROLS ── */
 #mobile-controls{position:absolute;inset:0;pointer-events:none;z-index:20;display:none;}
 #mobile-controls.show{display:block;}
-/* Left joystick */
-#joystick-zone{position:absolute;bottom:clamp(70px,14vw,100px);left:clamp(10px,3vw,20px);width:clamp(120px,24vw,150px);height:clamp(120px,24vw,150px);pointer-events:all;touch-action:none;z-index:25;}
-#joystick-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.08);border:2.5px solid rgba(255,255,255,0.3);box-shadow:0 0 20px rgba(0,0,0,0.5);}
-#joystick-knob{position:absolute;width:44%;height:44%;border-radius:50%;background:rgba(255,255,255,0.35);border:2px solid rgba(255,255,255,0.6);pointer-events:none;transform:translate(-50%,-50%);left:50%;top:50%;}
-#joystick-knob.active{background:rgba(255,215,0,0.55);border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,0.6);}
-/* Right side buttons */
-#mobile-btns{position:absolute;bottom:clamp(70px,14vw,100px);right:clamp(10px,3vw,20px);display:flex;flex-direction:column;gap:clamp(6px,1.5vw,10px);pointer-events:all;}
-.mob-btn{width:clamp(52px,10vw,64px);height:clamp(52px,10vw,64px);border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.8vw,11px);cursor:pointer;touch-action:manipulation;user-select:none;font-family:'Press Start 2P',monospace;text-align:center;line-height:1.2;-webkit-tap-highlight-color:transparent;}
-#mob-shoot{background:rgba(255,40,40,0.22);border-color:rgba(255,80,80,0.5);color:#ff6666;}
-#mob-shoot.firing{background:rgba(255,40,40,0.5);border-color:#ff4444;}
-#mob-reload{background:rgba(255,170,0,0.18);border-color:rgba(255,170,0,0.4);color:#ffaa00;font-size:clamp(16px,3vw,20px);}
-#mob-reload.active{background:rgba(255,170,0,0.4);}
-/* Mobile weapon row */
-#mob-weapons{position:absolute;bottom:clamp(6px,1.5vw,10px);left:50%;transform:translateX(-50%);display:flex;gap:clamp(5px,1.5vw,8px);pointer-events:all;}
-.mob-wep-btn{background:rgba(0,0,0,0.7);border:2px solid #555;border-radius:6px;padding:clamp(4px,1vw,6px) clamp(6px,1.5vw,10px);font-size:clamp(5px,1.1vw,7px);color:#aaa;cursor:pointer;touch-action:manipulation;font-family:'Press Start 2P',monospace;white-space:nowrap;}
-.mob-wep-btn.active{border-color:#FFD700;color:#FFD700;background:rgba(255,215,0,0.12);}
-/* Mobile top-right buttons */
-#mob-top-right{position:absolute;top:clamp(40px,8vh,60px);right:10px;display:flex;flex-direction:column;gap:6px;pointer-events:all;}
-.mob-top-btn{background:rgba(0,0,0,0.7);border:2px solid #555;border-radius:6px;padding:5px 8px;font-size:clamp(5px,1.1vw,7px);color:#aaa;cursor:pointer;touch-action:manipulation;font-family:'Press Start 2P',monospace;text-align:center;}
-/* Aim joystick (right side, large invisible area) */
-#aim-zone{position:absolute;bottom:clamp(70px,14vw,100px);right:clamp(80px,16vw,110px);width:clamp(90px,20vw,130px);height:clamp(100px,20vw,130px);pointer-events:all;/* debug: border:1px solid red; */}
 
-/* ── MOBILE CHEAT BTN ── */
-#mob-cheat-btn{position:absolute;top:clamp(6px,1.5vw,10px);left:50%;transform:translateX(-50%);background:rgba(0,200,100,0.18);border:2px solid rgba(0,255,136,0.4);border-radius:6px;padding:5px 10px;font-size:clamp(5px,1.1vw,7px);color:#00ff88;cursor:pointer;touch-action:manipulation;font-family:'Press Start 2P',monospace;z-index:35;display:none;pointer-events:all;}
+/* Left joystick — fixed position bottom-left */
+#joystick-zone{
+  position:absolute;
+  bottom:90px;
+  left:20px;
+  width:130px;
+  height:130px;
+  pointer-events:all;
+  touch-action:none;
+  z-index:25;
+}
+#joystick-base{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:rgba(255,255,255,0.07);
+  border:2.5px solid rgba(255,255,255,0.25);
+  box-shadow:0 0 24px rgba(0,0,0,0.6);
+}
+#joystick-knob{
+  position:absolute;
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.30);
+  border:2.5px solid rgba(255,255,255,0.55);
+  /* centered via JS — transform used to center on left/top point */
+  transform:translate(-50%,-50%);
+  left:50%;
+  top:50%;
+  pointer-events:none;
+  transition:background 0.1s,border-color 0.1s;
+}
+#joystick-knob.active{
+  background:rgba(255,215,0,0.5);
+  border-color:#FFD700;
+  box-shadow:0 0 18px rgba(255,215,0,0.55);
+}
+
+/* Right side action buttons — FIRE big, RELOAD smaller */
+#mobile-btns{
+  position:absolute;
+  bottom:90px;
+  right:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  pointer-events:all;
+  align-items:center;
+}
+#mob-shoot{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:rgba(255,40,40,0.28);
+  border:3px solid rgba(255,80,80,0.6);
+  color:#ff6666;
+  font-family:'Press Start 2P',monospace;
+  font-size:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#mob-shoot.firing{background:rgba(255,40,40,0.6);border-color:#ff2222;box-shadow:0 0 18px rgba(255,0,0,0.5);}
+#mob-reload{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:rgba(255,170,0,0.18);
+  border:2.5px solid rgba(255,170,0,0.45);
+  color:#ffaa00;
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  touch-action:manipulation;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#mob-reload.active{background:rgba(255,170,0,0.4);}
+
+/* Mobile weapon row — bottom center */
+#mob-weapons{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+  pointer-events:all;
+}
+.mob-wep-btn{
+  background:rgba(0,0,0,0.75);
+  border:2px solid #555;
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:clamp(6px,1.5vw,8px);
+  color:#aaa;
+  cursor:pointer;
+  touch-action:manipulation;
+  font-family:'Press Start 2P',monospace;
+  white-space:nowrap;
+  min-width:48px;
+  text-align:center;
+}
+.mob-wep-btn.active{border-color:#FFD700;color:#FFD700;background:rgba(255,215,0,0.14);}
+
+/* Top-right: pause + scoreboard */
+#mob-top-right{
+  position:absolute;
+  top:10px;
+  right:10px;
+  display:flex;
+  flex-direction:row;
+  gap:8px;
+  pointer-events:all;
+}
+.mob-top-btn{
+  background:rgba(0,0,0,0.75);
+  border:2px solid #555;
+  border-radius:8px;
+  padding:6px 10px;
+  font-size:clamp(6px,1.5vw,8px);
+  color:#aaa;
+  cursor:pointer;
+  touch-action:manipulation;
+  font-family:'Press Start 2P',monospace;
+  text-align:center;
+  min-width:38px;
+}
+
+/* Mobile cheat button — top center */
+#mob-cheat-btn{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,200,100,0.18);
+  border:2px solid rgba(0,255,136,0.4);
+  border-radius:8px;
+  padding:6px 12px;
+  font-size:clamp(5px,1.5vw,8px);
+  color:#00ff88;
+  cursor:pointer;
+  touch-action:manipulation;
+  font-family:'Press Start 2P',monospace;
+  z-index:35;
+  display:none;
+  pointer-events:all;
+  white-space:nowrap;
+}
 #mob-cheat-btn.show{display:block;}
 
 /* ── Telegram button ── */
@@ -548,12 +681,10 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;user-sele
       <div id="joystick-base"></div>
       <div id="joystick-knob"></div>
     </div>
-    <!-- Aim zone (invisible, right side) -->
-    <div id="aim-zone"></div>
     <!-- Action buttons -->
     <div id="mobile-btns">
-      <div class="mob-btn" id="mob-shoot">FIRE</div>
-      <div class="mob-btn" id="mob-reload">↻</div>
+      <div id="mob-shoot">FIRE</div>
+      <div id="mob-reload">↻</div>
     </div>
     <!-- Weapon selector -->
     <div id="mob-weapons">
@@ -591,7 +722,8 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;user-sele
 
 <script>
 // ================================================================
-//  CS:GO ONLINE — CHEAT  Client v9.0 (Mobile+Desktop)
+//  CS:GO ONLINE — CHEAT  Client v10.0
+//  Fixes: camera tracking, joystick, aimbot, triggerbot, all bugs
 // ================================================================
 const TILE_SIZE=32, PLAYER_RADIUS=11, MAP_W_DEF=40, MAP_H_DEF=30;
 const WEAPONS={
@@ -657,6 +789,7 @@ function playKillSound(){try{const ctx=getAudio(),vol=settings.masterVolume*0.8;
 let socket=null,myId=null,myTeam=null,myNickname='',currentRoomId=null,pendingNickname='';
 let pendingJoinRoomId=null;
 let gameState=null,mapData=null,mapW=MAP_W_DEF,mapH=MAP_H_DEF;
+// Camera: world coords of top-left corner of viewport
 let camX=0,camY=0,camReady=false;
 const keys={w:false,a:false,s:false,d:false};
 let mouseX=0,mouseY=0,mouseDown=false,chatOpen=false,cheatMenuOpen=false;
@@ -670,11 +803,10 @@ const tileCache=new Map();
 let pingInterval=null,fps=0,fpsCounter=0,fpsTimer=0,myShieldUntil=0;
 
 // ── Mobile joystick state ─────────────────────────────────────────
-const joy={active:false,id:-1,startX:0,startY:0,dx:0,dy:0};
-const aimTouch={active:false,id:-1,x:0,y:0,lastX:0,lastY:0};
-let mobShoot=false,mobShootId=-1;
-// joystick base center in page coords (set after layout)
-let joyBaseX=0,joyBaseY=0,joyBaseR=55;
+// joy.dx / joy.dy: -1..1 output
+const joy={active:false,id:-1,dx:0,dy:0};
+const aimTouch={active:false,id:-1};
+let mobShoot=false;
 
 const canvas=document.getElementById('game-canvas');
 const ctx=canvas.getContext('2d');
@@ -706,11 +838,9 @@ function saveNickname(n){localStorage.setItem('csgo_nickname',n);}
 // ── Draggable (mouse + touch) ─────────────────────────────────────
 function makeDraggable(el,handle){
   let ox=0,oy=0,drag=false;
-  // Mouse
   handle.addEventListener('mousedown',e=>{if(e.button!==0)return;drag=true;ox=e.clientX-el.offsetLeft;oy=e.clientY-el.offsetTop;e.preventDefault();});
   window.addEventListener('mousemove',e=>{if(!drag)return;el.style.left=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,e.clientX-ox))+'px';el.style.top=Math.max(0,Math.min(window.innerHeight-el.offsetHeight,e.clientY-oy))+'px';});
   window.addEventListener('mouseup',()=>{drag=false;});
-  // Touch
   handle.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;drag=true;const t=e.touches[0];ox=t.clientX-el.offsetLeft;oy=t.clientY-el.offsetTop;e.preventDefault();},{passive:false});
   window.addEventListener('touchmove',e=>{if(!drag)return;const t=e.touches[0];el.style.left=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,t.clientX-ox))+'px';el.style.top=Math.max(0,Math.min(window.innerHeight-el.offsetHeight,t.clientY-oy))+'px';e.preventDefault();},{passive:false});
   window.addEventListener('touchend',()=>{drag=false;});
@@ -734,7 +864,9 @@ function connectSocket(){
   socket.on('joined_room',data=>{
     myId=data.playerId;myTeam=data.team;currentRoomId=data.roomId;myNickname=data.nickname;
     currentWeapon='pistol';localAmmo=WEAPONS.pistol.magSize;localReloading=false;localReloadEnd=0;
-    camReady=false;myShieldUntil=Date.now()+5000;interpPlayers.clear();particles.length=0;
+    // CAMERA FIX: reset flag so camera snaps to player on first frame
+    camReady=false;camX=0;camY=0;
+    myShieldUntil=Date.now()+5000;interpPlayers.clear();particles.length=0;
     closeTeamSelect();showGameScreen();showWeaponPicker();
     document.getElementById('hud-team').textContent=data.team;
     const box=document.getElementById('hud-team-box');
@@ -804,13 +936,33 @@ function submitPassword(){
 // ── Interpolation ─────────────────────────────────────────────────
 function syncInterpTargets(state){
   state.players.forEach(p=>{
-    if(!interpPlayers.has(p.id)){interpPlayers.set(p.id,{...p,renderX:p.x,renderY:p.y});}
-    else{const c=interpPlayers.get(p.id);if(c.alive&&!p.alive&&settings.particles){spawnDeathParticles(c.renderX,c.renderY);if(p.id!==myId)playHitSound();}const rx=c.renderX,ry=c.renderY;Object.assign(c,p);c.renderX=rx;c.renderY=ry;}
+    if(!interpPlayers.has(p.id)){
+      // First time seeing this player — initialize render position = server position
+      interpPlayers.set(p.id,{...p,renderX:p.x,renderY:p.y});
+    } else {
+      const c=interpPlayers.get(p.id);
+      // Death particles
+      if(c.alive&&!p.alive&&settings.particles){spawnDeathParticles(c.renderX,c.renderY);if(p.id!==myId)playHitSound();}
+      // Save render position before overwriting
+      const rx=c.renderX,ry=c.renderY;
+      // Copy all server fields
+      Object.assign(c,p);
+      // Restore render position (interpolation target is p.x/p.y, render lags behind)
+      c.renderX=rx;
+      c.renderY=ry;
+    }
   });
   const ids=new Set(state.players.map(p=>p.id));
   interpPlayers.forEach((_,id)=>{if(!ids.has(id))interpPlayers.delete(id);});
 }
-function interpolatePlayers(){const LERP=0.28;interpPlayers.forEach(p=>{if(p.renderX===undefined){p.renderX=p.x;p.renderY=p.y;return;}p.renderX+=(p.x-p.renderX)*LERP;p.renderY+=(p.y-p.renderY)*LERP;});}
+function interpolatePlayers(){
+  const LERP=0.28;
+  interpPlayers.forEach(p=>{
+    if(p.renderX===undefined){p.renderX=p.x;p.renderY=p.y;return;}
+    p.renderX+=(p.x-p.renderX)*LERP;
+    p.renderY+=(p.y-p.renderY)*LERP;
+  });
+}
 
 // ── Particles ─────────────────────────────────────────────────────
 function spawnDeathParticles(x,y){for(let i=0;i<16;i++){const a=Math.random()*Math.PI*2,spd=2+Math.random()*8;particles.push({type:'death',x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,size:3+Math.random()*7,color:SKIN_COLORS[Math.floor(Math.random()*SKIN_COLORS.length)],alpha:1,life:1});}}
@@ -820,73 +972,68 @@ function updateParticles(dt){for(let i=particles.length-1;i>=0;i--){const p=part
 // ── Tile cache ────────────────────────────────────────────────────
 function buildTileCache(){if(!mapData)return;tileCache.clear();for(let y=0;y<mapH;y++)for(let x=0;x<mapW;x++){const t=mapData[y][x],seed=(x*31+y*17)^(x*y);if(t===1)tileCache.set(x+'_'+y,seed%WALL_PALETTES.length);if(t===4)tileCache.set(x+'_'+y,seed%COVER_PALETTES.length);if(t===5)tileCache.set(x+'_'+y,seed%BUILDING_PALETTES.length);}}
 
-// ── Mobile controls setup ─────────────────────────────────────────
-function setupMobileControls(){
-  const mc=document.getElementById('mobile-controls');
-  mc.classList.add('show');
-  document.getElementById('mob-cheat-btn').classList.add('show');
-  document.getElementById('controls-hint').style.display='none';
+// ================================================================
+// MOBILE CONTROLS — completely rewritten joystick
+// ================================================================
+let mobileControlsSetup=false;
 
+function setupMobileControls(){
   const jZone=document.getElementById('joystick-zone');
   const jKnob=document.getElementById('joystick-knob');
 
-  // ── Key insight: recalc ONLY when joystick is actually visible ─
-  // jZone uses transform:translate(-50%,-50%) on knob, so center = 50%/50%
-  // We read getBoundingClientRect() fresh on every touchstart to avoid
-  // stale values from before layout/orientation change
-  function getJoyCenter(){
+  // ── JOYSTICK ──────────────────────────────────────────────────
+  // We track ONE finger on the joystick zone.
+  // Center is computed fresh on every touchstart from getBoundingClientRect().
+
+  let jCx=0,jCy=0,jR=65; // zone center and radius in page coords
+
+  function recalcJoyCenter(){
     const r=jZone.getBoundingClientRect();
-    return {cx:r.left+r.width/2, cy:r.top+r.height/2, r:r.width/2};
+    if(r.width===0)return; // not visible yet
+    jCx=r.left+r.width/2;
+    jCy=r.top+r.height/2;
+    jR=r.width/2;
   }
 
-  // Store live center — updated on every touchstart
-  let joyCx=0,joyCy=0,joyR=60;
-
-  function joyMove(tx,ty){
-    let dx=tx-joyCx, dy=ty-joyCy;
+  function knobTo(px,py){
+    // px,py: page coords of desired knob center, clamped to circle
+    let dx=px-jCx, dy=py-jCy;
     const dist=Math.hypot(dx,dy);
-    // Clamp to radius
-    if(dist>joyR){dx=dx/dist*joyR;dy=dy/dist*joyR;}
-    // Move knob — knob uses transform:translate(-50%,-50%) so
-    // left/top set the CENTER of the knob relative to jZone
+    if(dist>jR){dx=dx/dist*jR;dy=dy/dist*jR;}
+    // Convert to jZone-local coords (knob uses transform:translate(-50%,-50%))
     const r=jZone.getBoundingClientRect();
-    // center of knob in jZone-local coords:
-    const lx=(joyCx+dx)-r.left;
-    const ly=(joyCy+dy)-r.top;
-    jKnob.style.left=lx+'px';
-    jKnob.style.top=ly+'px';
-    // Normalize to -1..1
-    joy.dx=dx/joyR;
-    joy.dy=dy/joyR;
-    jKnob.classList.add('active');
+    jKnob.style.left=(jCx+dx-r.left)+'px';
+    jKnob.style.top =(jCy+dy-r.top )+'px';
+    // Output normalized -1..1
+    joy.dx=dx/jR;
+    joy.dy=dy/jR;
   }
 
-  function joyReset(){
-    // Return knob to visual center of jZone
-    const zW=jZone.offsetWidth||120;
-    const zH=jZone.offsetHeight||120;
-    jKnob.style.left=(zW/2)+'px';
-    jKnob.style.top=(zH/2)+'px';
-    joy.dx=0; joy.dy=0; joy.active=false; joy.id=-1;
+  function knobReset(){
+    const r=jZone.getBoundingClientRect();
+    if(r.width>0){
+      jKnob.style.left=(r.width/2)+'px';
+      jKnob.style.top =(r.height/2)+'px';
+    } else {
+      jKnob.style.left='50%';
+      jKnob.style.top='50%';
+    }
+    joy.dx=0;joy.dy=0;joy.active=false;joy.id=-1;
     jKnob.classList.remove('active');
-    joyBaseX=0; joyBaseY=0;
   }
 
-  // ── JOYSTICK touch events — attached directly to jZone ────────
+  // Attach directly to joystick zone element
   jZone.addEventListener('touchstart',e=>{
     e.preventDefault();
     e.stopPropagation();
     unlockAudio();
-    if(joy.id!==-1)return; // already tracking a finger
+    if(joy.id!==-1)return;
     const t=e.changedTouches[0];
     joy.id=t.identifier;
     joy.active=true;
-    // Recalc center fresh right now (zone is guaranteed visible)
-    const c=getJoyCenter();
-    joyCx=c.cx; joyCy=c.cy; joyR=Math.max(30,c.r);
-    // Also store globally for canvas touch handler
-    joyBaseX=joyCx; joyBaseY=joyCy; joyBaseR=joyR;
-    joyMove(t.clientX,t.clientY);
+    recalcJoyCenter(); // fresh center every start
+    knobTo(t.clientX,t.clientY);
+    jKnob.classList.add('active');
   },{passive:false});
 
   jZone.addEventListener('touchmove',e=>{
@@ -894,7 +1041,7 @@ function setupMobileControls(){
     e.stopPropagation();
     for(const t of e.changedTouches){
       if(t.identifier===joy.id){
-        joyMove(t.clientX,t.clientY);
+        knobTo(t.clientX,t.clientY);
         break;
       }
     }
@@ -904,44 +1051,36 @@ function setupMobileControls(){
     e.preventDefault();
     e.stopPropagation();
     for(const t of e.changedTouches){
-      if(t.identifier===joy.id){
-        joyReset();
-        break;
-      }
+      if(t.identifier===joy.id){knobReset();break;}
     }
   },{passive:false});
 
   jZone.addEventListener('touchcancel',e=>{
     e.preventDefault();
-    joyReset();
+    knobReset();
   },{passive:false});
 
-  // ── CANVAS touch — aim + fallback joystick ────────────────────
-  // We only use canvas for aim tracking (right side swipe)
-  // Joystick zone handles its own touches via stopPropagation
-
-  function isInJoyZone(x,y){
-    // Use current joyZone bounding rect for accurate check
+  // ── CANVAS: aim tracking (right side swipes) ──────────────────
+  function isJoyZone(x,y){
     const r=jZone.getBoundingClientRect();
-    return x>=r.left-10&&x<=r.right+10&&y>=r.top-10&&y<=r.bottom+10;
+    return x>=r.left-20&&x<=r.right+20&&y>=r.top-20&&y<=r.bottom+20;
   }
-  function isInButtonArea(x,y){
-    // Right side action buttons
-    const W=window.innerWidth,H=window.innerHeight;
-    return x>W*0.60&&y>H*0.40;
+  function isActionBtn(x,y){
+    // exclude bottom-right quadrant (buttons area)
+    return x>window.innerWidth*0.6&&y>window.innerHeight*0.4;
   }
 
   canvas.addEventListener('touchstart',e=>{
     e.preventDefault();
     unlockAudio();
     for(const t of e.changedTouches){
-      const x=t.clientX,y=t.clientY;
-      if(isInJoyZone(x,y))continue;   // handled by jZone
-      if(isInButtonArea(x,y))continue; // handled by buttons
+      if(isJoyZone(t.clientX,t.clientY))continue;
+      if(isActionBtn(t.clientX,t.clientY))continue;
       if(!aimTouch.active){
         aimTouch.active=true;
         aimTouch.id=t.identifier;
-        mouseX=x; mouseY=y;
+        mouseX=t.clientX;
+        mouseY=t.clientY;
       }
     }
   },{passive:false});
@@ -959,61 +1098,52 @@ function setupMobileControls(){
   canvas.addEventListener('touchend',e=>{
     e.preventDefault();
     for(const t of e.changedTouches){
-      if(t.identifier===aimTouch.id){
-        aimTouch.active=false;
-        aimTouch.id=-1;
-      }
+      if(t.identifier===aimTouch.id){aimTouch.active=false;aimTouch.id=-1;}
     }
   },{passive:false});
 
   canvas.addEventListener('touchcancel',e=>{
     e.preventDefault();
-    aimTouch.active=false;
-    aimTouch.id=-1;
+    aimTouch.active=false;aimTouch.id=-1;
   },{passive:false});
 
-  // ── SHOOT button ──────────────────────────────────────────────
+  // ── FIRE button ───────────────────────────────────────────────
   const mobShootBtn=document.getElementById('mob-shoot');
   mobShootBtn.addEventListener('touchstart',e=>{
-    e.preventDefault(); e.stopPropagation();
-    mouseDown=true; mobShoot=true;
+    e.preventDefault();e.stopPropagation();
+    mouseDown=true;mobShoot=true;
     unlockAudio();
     mobShootBtn.classList.add('firing');
   },{passive:false});
   mobShootBtn.addEventListener('touchend',e=>{
-    e.preventDefault(); e.stopPropagation();
-    mouseDown=false; mobShoot=false;
+    e.preventDefault();e.stopPropagation();
+    mouseDown=false;mobShoot=false;
     mobShootBtn.classList.remove('firing');
   },{passive:false});
   mobShootBtn.addEventListener('touchcancel',e=>{
     e.preventDefault();
-    mouseDown=false; mobShoot=false;
+    mouseDown=false;mobShoot=false;
     mobShootBtn.classList.remove('firing');
   },{passive:false});
 
   // ── RELOAD button ─────────────────────────────────────────────
   const mobReloadBtn=document.getElementById('mob-reload');
   mobReloadBtn.addEventListener('touchstart',e=>{
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();e.stopPropagation();
     startReload();
     mobReloadBtn.classList.add('active');
   },{passive:false});
   mobReloadBtn.addEventListener('touchend',e=>{
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();e.stopPropagation();
     mobReloadBtn.classList.remove('active');
   },{passive:false});
 
-  // ── Initial knob center position ──────────────────────────────
-  // Use rAF to wait for layout
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{ joyReset(); });
-  });
+  // Initial knob position — wait for layout
+  requestAnimationFrame(()=>requestAnimationFrame(()=>knobReset()));
 
-  // Recenter on resize / orientation change
-  window.addEventListener('resize',()=>{ joyReset(); });
-  window.addEventListener('orientationchange',()=>{
-    setTimeout(()=>{ joyReset(); },350);
-  });
+  // Recenter on orientation change
+  window.addEventListener('orientationchange',()=>setTimeout(()=>knobReset(),400));
+  window.addEventListener('resize',()=>knobReset());
 }
 
 function updateMobWeapon(){
@@ -1031,10 +1161,11 @@ function gameLoop(){
   lastFrameTime=now;
   fpsCounter++;fpsTimer+=dt;
   if(fpsTimer>=1){fps=fpsCounter;fpsCounter=0;fpsTimer=0;}
+  // Local reload timer
   if(localReloading&&Date.now()>=localReloadEnd){localReloading=false;localAmmo=WEAPONS[currentWeapon].magSize;updateAmmoHUD();}
-  // Apply mobile joystick to movement keys
+  // Mobile joystick → keys (with deadzone)
   if(isMobile()){
-    const DZ=0.18; // deadzone — ignore tiny accidental touches
+    const DZ=0.2;
     keys.w=joy.dy<-DZ;
     keys.s=joy.dy> DZ;
     keys.a=joy.dx<-DZ;
@@ -1044,10 +1175,49 @@ function gameLoop(){
     interpolatePlayers();
     if(settings.particles)updateParticles(dt);
     if(cheats.spinbot)localSpinAngle+=cheats.spinSpeed*5*Math.PI/180;
-    sendInput();render();
+    sendInput();
+    render();
   }
   if(nightMode){nightOverlay.style.setProperty('--lx',mouseX+'px');nightOverlay.style.setProperty('--ly',mouseY+'px');}
   requestAnimationFrame(gameLoop);
+}
+
+// ================================================================
+// CAMERA — fixed to always follow player
+// ================================================================
+function updateCamera(){
+  const W=canvas.width,H=canvas.height;
+  const me=interpPlayers.get(myId);
+  if(!me)return;
+
+  // Target: player at screen center
+  const targetX=me.renderX-W/2;
+  const targetY=me.renderY-H/2;
+
+  if(!camReady){
+    // First frame: snap instantly
+    camX=targetX;
+    camY=targetY;
+    camReady=true;
+  } else {
+    // Smooth follow
+    camX+=(targetX-camX)*settings.camSmooth;
+    camY+=(targetY-camY)*settings.camSmooth;
+  }
+
+  // Clamp to map bounds
+  const mapPxW=mapW*TILE_SIZE;
+  const mapPxH=mapH*TILE_SIZE;
+  if(mapPxW<=W){
+    camX=-(W-mapPxW)/2; // center small map
+  } else {
+    camX=Math.max(0,Math.min(camX,mapPxW-W));
+  }
+  if(mapPxH<=H){
+    camY=-(H-mapPxH)/2;
+  } else {
+    camY=Math.max(0,Math.min(camY,mapPxH-H));
+  }
 }
 
 // ================================================================
@@ -1055,20 +1225,16 @@ function gameLoop(){
 // ================================================================
 function render(){
   const W=canvas.width,H=canvas.height;
-  const me=interpPlayers.get(myId);
-  if(me){
-    const tgX=me.renderX-W*0.5;
-    const tgY=me.renderY-H*0.5;
-    if(!camReady){camX=tgX;camY=tgY;camReady=true;}
-    else{camX+=(tgX-camX)*settings.camSmooth;camY+=(tgY-camY)*settings.camSmooth;}
-    const mpW=mapW*TILE_SIZE,mpH=mapH*TILE_SIZE;
-    camX=mpW<=W?-(W-mpW)/2:Math.max(0,Math.min(camX,mpW-W));
-    camY=mpH<=H?-(H-mpH)/2:Math.max(0,Math.min(camY,mpH-H));
-  }
+
+  // Update camera FIRST
+  updateCamera();
+
   ctx.fillStyle=nightMode?'#050510':'#1a1a1a';
   ctx.fillRect(0,0,W,H);
+
   ctx.save();
   ctx.translate(-Math.round(camX),-Math.round(camY));
+
   drawMap();
   if(settings.particles)drawParticlesWorld(false);
   const meP=interpPlayers.get(myId);
@@ -1076,9 +1242,14 @@ function render(){
   drawBullets();
   drawPlayers(meP);
   if(settings.particles)drawParticlesWorld(true);
+
   ctx.restore();
+
+  // Crosshair drawn in screen space (after restore)
   drawCrosshair();
   if(cheats.radarHack)drawMinimap();
+
+  // Death overlay
   if(meP&&!meP.alive){ctx.fillStyle='rgba(160,0,0,0.14)';ctx.fillRect(0,0,W,H);}
   if(settings.showFPS)drawFPS();
 }
@@ -1157,7 +1328,9 @@ function drawPlayers(me){
     const shielded=isMe?Date.now()<myShieldUntil:!!player.shielded;
     if(shielded){ctx.save();ctx.strokeStyle='rgba(0,200,255,0.6)';ctx.lineWidth=3;ctx.shadowBlur=14;ctx.shadowColor='#00ccff';ctx.beginPath();ctx.arc(dx,dy,PLAYER_RADIUS+6,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;ctx.restore();}
     if(cheats.boxEsp&&!isMe){ctx.strokeStyle=isEnemy?'#ff2222':'#22ff22';ctx.lineWidth=1.5;ctx.setLineDash([4,2]);ctx.strokeRect(dx-16,dy-16,32,32);ctx.setLineDash([]);}
+    // HP bar always visible for all players
     {const bw=30,bh=4,bx=dx-bw/2,by=dy-28;ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(bx-1,by-1,bw+2,bh+2);ctx.fillStyle='#111';ctx.fillRect(bx,by,bw,bh);const r=player.hp/100;ctx.fillStyle=r>0.5?'#44ff44':r>0.25?'#ffaa00':'#ff2222';ctx.fillRect(bx,by,Math.round(bw*r),bh);ctx.strokeStyle='rgba(0,0,0,0.5)';ctx.lineWidth=0.5;ctx.strokeRect(bx,by,bw,bh);}
+    // Nickname
     {ctx.font='6px "Press Start 2P"';ctx.textAlign='center';ctx.fillStyle=isMe?'#FFD700':isEnemy?'#ff6666':'#66ff66';ctx.fillText(player.nickname,dx,dy-33);}
     drawLegoFigure(player,dx,dy,isMe);
   });
@@ -1189,7 +1362,7 @@ function drawLineESP(me){interpPlayers.forEach((p,id)=>{if(id===myId||!p.alive||
 function drawBullets(){if(!gameState)return;gameState.bullets.forEach(b=>{const t=b.trail||0;ctx.shadowBlur=0;if(t===1){ctx.shadowBlur=8;ctx.shadowColor='#00ffff';ctx.fillStyle='#00ffff';}else if(t===2){ctx.shadowBlur=6;ctx.shadowColor='#ff4500';ctx.fillStyle='#ff8800';}else if(t===3){ctx.fillStyle='hsl('+(Date.now()/5%360)+',100%,60%)';}else{ctx.fillStyle='#111111';}ctx.fillRect(b.x-3,b.y-3,6,6);ctx.shadowBlur=0;});}
 function drawParticlesWorld(over){particles.forEach(p=>{if(p.type==='dmg'){if(!over)return;ctx.globalAlpha=Math.max(0,p.alpha);ctx.font='bold 9px "Press Start 2P"';ctx.textAlign='center';ctx.fillStyle=p.color;ctx.strokeStyle='#000';ctx.lineWidth=2;ctx.strokeText(p.text,p.x,p.y);ctx.fillText(p.text,p.x,p.y);}else{ctx.globalAlpha=Math.max(0,p.alpha*(over?1:0.5));ctx.fillStyle=p.color;const s=p.size*(over?p.alpha:1);ctx.fillRect(p.x-s/2,p.y-s/2,s,s);}});ctx.globalAlpha=1;}
 
-// ── Crosshair ─────────────────────────────────────────────────────
+// ── Crosshair — screen space ──────────────────────────────────────
 function drawCrosshair(){
   if(paused||isMobile())return;
   const color=XHAIR_COLORS[cheats.xhairColor],size=cheats.xhairSize,cx=mouseX,cy=mouseY;
@@ -1213,12 +1386,10 @@ let hitTimer=null;
 function showHitIndicator(){const el=document.getElementById('hit-indicator');el.style.opacity='1';clearTimeout(hitTimer);hitTimer=setTimeout(()=>el.style.opacity='0',250);}
 function screenFlash(color,dur){const el=document.getElementById('screen-flash');el.style.background=color;el.style.opacity='1';el.style.transition='opacity 0ms';setTimeout(()=>{el.style.transition='opacity '+dur+'ms ease';el.style.opacity='0';},30);}
 
-// ── Controls (keyboard+mouse+touch) ───────────────────────────────
-let mobileControlsSetup=false;
+// ── Controls (keyboard + mouse) ───────────────────────────────────
 function setupControls(){
   if(isMobile()){
     canvas.style.cursor='default';
-    // Mobile controls set up lazily on first showGameScreen()
   } else {
     canvas.style.cursor='none';
     window.addEventListener('keydown',onKeyDown);
@@ -1239,35 +1410,143 @@ function onKeyDown(e){
   if(e.key==='Enter'){e.preventDefault();if(paused)return;toggleCheatMenu();return;}
   if(paused||cheatMenuOpen)return;
   const k=normKey(e);
-  switch(k){case 'w':keys.w=true;break;case 'a':keys.a=true;break;case 's':keys.s=true;break;case 'd':keys.d=true;break;case 'r':startReload();break;case '1':switchWeapon('pistol');break;case '2':switchWeapon('ak');break;case '3':switchWeapon('awp');break;case 't':if(currentRoomId)openChatInput();break;case 'tab':e.preventDefault();showScoreboard();tabDown=true;break;}
+  switch(k){
+    case 'w':keys.w=true;break;case 'a':keys.a=true;break;
+    case 's':keys.s=true;break;case 'd':keys.d=true;break;
+    case 'r':startReload();break;
+    case '1':switchWeapon('pistol');break;
+    case '2':switchWeapon('ak');break;
+    case '3':switchWeapon('awp');break;
+    case 't':if(currentRoomId)openChatInput();break;
+    case 'tab':e.preventDefault();showScoreboard();tabDown=true;break;
+  }
 }
 function onKeyUp(e){if(chatOpen)return;const k=normKey(e);switch(k){case 'w':keys.w=false;break;case 'a':keys.a=false;break;case 's':keys.s=false;break;case 'd':keys.d=false;break;case 'tab':hideScoreboard();tabDown=false;break;}}
 function startReload(){if(!currentRoomId||localReloading)return;const wep=WEAPONS[currentWeapon];if(localAmmo>=wep.magSize)return;localReloading=true;localReloadEnd=Date.now()+wep.reloadTime;playReloadSound();updateAmmoHUD();}
 function switchWeapon(w){if(currentWeapon===w)return;currentWeapon=w;localAmmo=WEAPONS[w].magSize;localReloading=false;localReloadEnd=0;updateWeaponHUD();updateMobWeapon();}
 
 // ================================================================
-// SEND INPUT
+// SEND INPUT — aim angle computed from SCREEN-space player position
 // ================================================================
 function sendInput(){
   if(!socket||!socket.connected||!currentRoomId||!gameState||paused)return;
-  const me=interpPlayers.get(myId);if(!me||!me.alive)return;
-  const psx=me.renderX-camX,psy=me.renderY-camY;
-  let mouseAngle=Math.atan2(mouseY-psy,mouseX-psx);
-  // On mobile: if joystick is moving, aim in that direction too (as fallback)
-  if(isMobile()&&(joy.dx!==0||joy.dy!==0)&&!aimTouch.active){
+  const me=interpPlayers.get(myId);
+  if(!me||!me.alive)return;
+
+  // Player position in SCREEN coords (after camera transform)
+  const playerScreenX=me.renderX-camX;
+  const playerScreenY=me.renderY-camY;
+
+  // Mouse angle: from player screen pos to mouse cursor
+  let mouseAngle=Math.atan2(mouseY-playerScreenY, mouseX-playerScreenX);
+
+  // On mobile with joystick only (no aim swipe): use joystick direction
+  if(isMobile()&&!aimTouch.active&&(joy.dx!==0||joy.dy!==0)){
     mouseAngle=Math.atan2(joy.dy,joy.dx);
   }
+
+  // Aimbot: find target in FOV cone, lerp toward it
   let aimAngle=mouseAngle;
-  if(cheats.aimbot){const tgt=findAimbotTarget(me,mouseAngle);if(tgt){const ta=Math.atan2(tgt.renderY-me.renderY,tgt.renderX-me.renderX);const lerpF=cheats.aimbotSmooth<=1?1:(1/cheats.aimbotSmooth);aimAngle=lerpAngle(mouseAngle,ta,lerpF);}}
+  if(cheats.aimbot){
+    const tgt=findAimbotTarget(me,mouseAngle);
+    if(tgt){
+      const ta=Math.atan2(tgt.renderY-me.renderY, tgt.renderX-me.renderX);
+      // lerpF: 1=snap, 0.1=very smooth
+      const lerpF=cheats.aimbotSmooth<=1?1.0:1.0/cheats.aimbotSmooth;
+      aimAngle=lerpAngle(mouseAngle,ta,lerpF);
+    }
+  }
+
+  // Shoot decision
   let shouldShoot=(mouseDown||mobShoot)&&!paused&&!cheatMenuOpen;
-  if(cheats.triggerbot&&!shouldShoot){const now2=Date.now();if(now2-lastTriggerShot>Math.max(0,cheats.triggerbotDelay)){if(findTriggerTarget(me,aimAngle)){shouldShoot=true;lastTriggerShot=now2;}}}
+
+  // Triggerbot: fire if aimAngle points at an enemy (after aimbot correction)
+  if(cheats.triggerbot&&!shouldShoot){
+    const now2=Date.now();
+    if(now2-lastTriggerShot>=Math.max(0,cheats.triggerbotDelay)){
+      if(findTriggerTarget(me,aimAngle)){
+        shouldShoot=true;
+        lastTriggerShot=now2;
+      }
+    }
+  }
+
+  // Client-side shot timing (visual only, server authoritative)
   const now=Date.now();
-  if(shouldShoot){const wep=WEAPONS[currentWeapon];if(now-lastShotTime<wep.fireRate||localAmmo<=0||localReloading){shouldShoot=false;}else{lastShotTime=now;localAmmo=Math.max(0,localAmmo-1);updateAmmoHUD();playShotSound(currentWeapon);if(localAmmo===0)startReload();}}
-  socket.emit('player_input',{up:keys.w,down:keys.s,left:keys.a,right:keys.d,angle:aimAngle,shoot:shouldShoot,reload:localReloading,weapon:currentWeapon,cheats:{aimbot:cheats.aimbot,aimbotFOV:cheats.aimbotFOV,antiAim:cheats.antiAim,fakeLag:cheats.fakeLag,spinbot:cheats.spinbot,spinSpeed:cheats.spinSpeed,bhop:cheats.bhop,noRecoil:cheats.noRecoil,radarHack:cheats.radarHack,skin:cheats.skin,trail:cheats.trail}});
+  if(shouldShoot){
+    const wep=WEAPONS[currentWeapon];
+    if(now-lastShotTime<wep.fireRate||localAmmo<=0||localReloading){
+      shouldShoot=false;
+    } else {
+      lastShotTime=now;
+      localAmmo=Math.max(0,localAmmo-1);
+      updateAmmoHUD();
+      playShotSound(currentWeapon);
+      if(localAmmo===0)startReload();
+    }
+  }
+
+  socket.emit('player_input',{
+    up:keys.w,down:keys.s,left:keys.a,right:keys.d,
+    angle:aimAngle,
+    shoot:shouldShoot,
+    reload:localReloading,
+    weapon:currentWeapon,
+    cheats:{
+      aimbot:cheats.aimbot,aimbotFOV:cheats.aimbotFOV,
+      antiAim:cheats.antiAim,fakeLag:cheats.fakeLag,
+      spinbot:cheats.spinbot,spinSpeed:cheats.spinSpeed,
+      bhop:cheats.bhop,noRecoil:cheats.noRecoil,
+      radarHack:cheats.radarHack,skin:cheats.skin,trail:cheats.trail
+    }
+  });
 }
-function findAimbotTarget(me,currentAngle){if(!gameState)return null;let closest=null,closestDist=Infinity;const fovRad=(cheats.aimbotFOV/2)*Math.PI/180;interpPlayers.forEach((t,id)=>{if(id===myId||t.team===myTeam||!t.alive)return;const dx=t.renderX-me.renderX,dy=t.renderY-me.renderY;const dist=Math.hypot(dx,dy);if(dist<1)return;let diff=Math.atan2(dy,dx)-currentAngle;while(diff>Math.PI)diff-=Math.PI*2;while(diff<-Math.PI)diff+=Math.PI*2;if(Math.abs(diff)>fovRad)return;if(dist<closestDist){closestDist=dist;closest=t;}});return closest;}
-function findTriggerTarget(me,aimAngle){let found=null;interpPlayers.forEach((t,id)=>{if(found||id===myId||t.team===myTeam||!t.alive)return;const dx=t.renderX-me.renderX,dy=t.renderY-me.renderY;const dist=Math.hypot(dx,dy);if(dist<1)return;let diff=Math.atan2(dy,dx)-aimAngle;while(diff>Math.PI)diff-=Math.PI*2;while(diff<-Math.PI)diff+=Math.PI*2;const perpDist=Math.abs(Math.sin(diff)*dist);if(perpDist<PLAYER_RADIUS+2&&Math.abs(diff)<0.12)found=t;});return found;}
-function lerpAngle(a,b,t){let d=b-a;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return a+d*Math.min(1,t);}
+
+// Aimbot: find closest enemy within FOV cone (using renderX/renderY)
+function findAimbotTarget(me,currentAngle){
+  if(!gameState)return null;
+  let closest=null,closestDist=Infinity;
+  const fovRad=(cheats.aimbotFOV/2)*Math.PI/180; // half-angle of cone
+  interpPlayers.forEach((t,id)=>{
+    if(id===myId||t.team===myTeam||!t.alive)return;
+    const dx=t.renderX-me.renderX,dy=t.renderY-me.renderY;
+    const dist=Math.hypot(dx,dy);
+    if(dist<1)return;
+    const targetAngle=Math.atan2(dy,dx);
+    let diff=targetAngle-currentAngle;
+    while(diff> Math.PI)diff-=Math.PI*2;
+    while(diff<-Math.PI)diff+=Math.PI*2;
+    if(Math.abs(diff)>fovRad)return; // outside FOV
+    if(dist<closestDist){closestDist=dist;closest=t;}
+  });
+  return closest;
+}
+
+// Triggerbot: check if aimAngle ray passes through an enemy hitbox
+function findTriggerTarget(me,aimAngle){
+  let found=null;
+  interpPlayers.forEach((t,id)=>{
+    if(found||id===myId||t.team===myTeam||!t.alive)return;
+    const dx=t.renderX-me.renderX,dy=t.renderY-me.renderY;
+    const dist=Math.hypot(dx,dy);
+    if(dist<1)return;
+    const targetAngle=Math.atan2(dy,dx);
+    let diff=targetAngle-aimAngle;
+    while(diff> Math.PI)diff-=Math.PI*2;
+    while(diff<-Math.PI)diff+=Math.PI*2;
+    // Perpendicular distance from ray to enemy center
+    const perpDist=Math.abs(Math.sin(diff)*dist);
+    if(perpDist<PLAYER_RADIUS&&Math.abs(diff)<0.15)found=t;
+  });
+  return found;
+}
+
+function lerpAngle(a,b,t){
+  let d=b-a;
+  while(d> Math.PI)d-=Math.PI*2;
+  while(d<-Math.PI)d+=Math.PI*2;
+  return a+d*Math.min(1,t);
+}
 
 // ── HUD ───────────────────────────────────────────────────────────
 function updateHUD(state){
@@ -1376,11 +1655,11 @@ function leaveServer(){
   if(cheatMenuOpen)toggleCheatMenu();
   minimapCanvas.classList.remove('visible');
   closeTeamSelect();showMainMenu();
-  // Hide mobile controls
   document.getElementById('mobile-controls').classList.remove('show');
   document.getElementById('mob-cheat-btn').classList.remove('show');
   mobileControlsSetup=false;
   joy.dx=0;joy.dy=0;joy.active=false;joy.id=-1;
+  mouseDown=false;mobShoot=false;
 }
 function openSettings(){document.getElementById('settings-panel').classList.add('open');}
 function closeSettings(){document.getElementById('settings-panel').classList.remove('open');}
@@ -1462,7 +1741,7 @@ function showGameScreen(){
     document.getElementById('mob-cheat-btn').classList.add('show');
     if(!mobileControlsSetup){
       mobileControlsSetup=true;
-      // Two rAF = guaranteed after paint, joystick zone is fully laid out
+      // Double rAF: guaranteed after layout paint
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>{
           setupMobileControls();

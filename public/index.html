@@ -243,10 +243,10 @@ body{background:#111;font-family:'Press Start 2P',monospace;color:#fff;user-sele
 #mobile-controls{position:absolute;inset:0;pointer-events:none;z-index:20;display:none;}
 #mobile-controls.show{display:block;}
 /* Left joystick */
-#joystick-zone{position:absolute;bottom:clamp(70px,14vw,100px);left:clamp(10px,3vw,20px);width:clamp(110px,22vw,140px);height:clamp(110px,22vw,140px);pointer-events:all;touch-action:none;z-index:25;}
-#joystick-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.07);border:2.5px solid rgba(255,255,255,0.22);box-shadow:0 0 16px rgba(0,0,0,0.4);}
-#joystick-knob{position:absolute;width:42%;height:42%;top:29%;left:29%;border-radius:50%;background:rgba(255,255,255,0.28);border:2px solid rgba(255,255,255,0.5);transition:background 0.1s,border-color 0.1s;pointer-events:none;}
-#joystick-knob.active{background:rgba(255,215,0,0.42);border-color:#FFD700;box-shadow:0 0 14px rgba(255,215,0,0.55);}
+#joystick-zone{position:absolute;bottom:clamp(70px,14vw,100px);left:clamp(10px,3vw,20px);width:clamp(120px,24vw,150px);height:clamp(120px,24vw,150px);pointer-events:all;touch-action:none;z-index:25;}
+#joystick-base{position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,0.08);border:2.5px solid rgba(255,255,255,0.3);box-shadow:0 0 20px rgba(0,0,0,0.5);}
+#joystick-knob{position:absolute;width:44%;height:44%;border-radius:50%;background:rgba(255,255,255,0.35);border:2px solid rgba(255,255,255,0.6);pointer-events:none;transform:translate(-50%,-50%);left:50%;top:50%;}
+#joystick-knob.active{background:rgba(255,215,0,0.55);border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,0.6);}
 /* Right side buttons */
 #mobile-btns{position:absolute;bottom:clamp(70px,14vw,100px);right:clamp(10px,3vw,20px);display:flex;flex-direction:column;gap:clamp(6px,1.5vw,10px);pointer-events:all;}
 .mob-btn{width:clamp(52px,10vw,64px);height:clamp(52px,10vw,64px);border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.8vw,11px);cursor:pointer;touch-action:manipulation;user-select:none;font-family:'Press Start 2P',monospace;text-align:center;line-height:1.2;-webkit-tap-highlight-color:transparent;}
@@ -830,75 +830,85 @@ function setupMobileControls(){
   const jZone=document.getElementById('joystick-zone');
   const jKnob=document.getElementById('joystick-knob');
 
-  // ── Recalculate joystick center after layout ──────────────────
-  function recalcJoy(){
-    const rect=jZone.getBoundingClientRect();
-    joyBaseX=rect.left+rect.width/2;
-    joyBaseY=rect.top+rect.height/2;
-    joyBaseR=rect.width/2||55;
+  // ── Key insight: recalc ONLY when joystick is actually visible ─
+  // jZone uses transform:translate(-50%,-50%) on knob, so center = 50%/50%
+  // We read getBoundingClientRect() fresh on every touchstart to avoid
+  // stale values from before layout/orientation change
+  function getJoyCenter(){
+    const r=jZone.getBoundingClientRect();
+    return {cx:r.left+r.width/2, cy:r.top+r.height/2, r:r.width/2};
   }
-  // Recalc now and on resize/orientation change
-  recalcJoy();
-  // Center knob after layout is confirmed
-  requestAnimationFrame(()=>{ recalcJoy(); joyReset(); });
-  window.addEventListener('resize',()=>{ recalcJoy(); joyReset(); });
-  window.addEventListener('orientationchange',()=>setTimeout(()=>{ recalcJoy(); joyReset(); },300));
+
+  // Store live center — updated on every touchstart
+  let joyCx=0,joyCy=0,joyR=60;
 
   function joyMove(tx,ty){
-    let dx=tx-joyBaseX, dy=ty-joyBaseY;
+    let dx=tx-joyCx, dy=ty-joyCy;
     const dist=Math.hypot(dx,dy);
-    if(dist>joyBaseR){dx=dx/dist*joyBaseR;dy=dy/dist*joyBaseR;}
-    // Use absolute px positioning relative to jZone top-left
-    const rect=jZone.getBoundingClientRect();
-    // knob center should be at (joyBaseX+dx, joyBaseY+dy) in page coords
-    // convert to jZone-local coords: subtract rect.left/top, then offset by half-knob
-    const knobW=jZone.offsetWidth*0.42;  // matches CSS 42%
-    const localX=(joyBaseX+dx-rect.left)-(knobW/2);
-    const localY=(joyBaseY+dy-rect.top) -(knobW/2);
-    jKnob.style.left=localX+'px';
-    jKnob.style.top= localY+'px';
-    joy.dx=dx/joyBaseR;
-    joy.dy=dy/joyBaseR;
+    // Clamp to radius
+    if(dist>joyR){dx=dx/dist*joyR;dy=dy/dist*joyR;}
+    // Move knob — knob uses transform:translate(-50%,-50%) so
+    // left/top set the CENTER of the knob relative to jZone
+    const r=jZone.getBoundingClientRect();
+    // center of knob in jZone-local coords:
+    const lx=(joyCx+dx)-r.left;
+    const ly=(joyCy+dy)-r.top;
+    jKnob.style.left=lx+'px';
+    jKnob.style.top=ly+'px';
+    // Normalize to -1..1
+    joy.dx=dx/joyR;
+    joy.dy=dy/joyR;
     jKnob.classList.add('active');
   }
+
   function joyReset(){
-    // reset knob to center using px
-    const zW=jZone.offsetWidth, zH=jZone.offsetHeight;
-    const knobW=zW*0.42, knobH=zH*0.42;
-    jKnob.style.left=((zW-knobW)/2)+'px';
-    jKnob.style.top= ((zH-knobH)/2)+'px';
-    joy.dx=0;joy.dy=0;joy.active=false;joy.id=-1;
+    // Return knob to visual center of jZone
+    const zW=jZone.offsetWidth||120;
+    const zH=jZone.offsetHeight||120;
+    jKnob.style.left=(zW/2)+'px';
+    jKnob.style.top=(zH/2)+'px';
+    joy.dx=0; joy.dy=0; joy.active=false; joy.id=-1;
     jKnob.classList.remove('active');
+    joyBaseX=0; joyBaseY=0;
   }
 
-  // ── Helper: is point inside joystick zone? ────────────────────
-  function inJoyZone(x,y){
-    return Math.hypot(x-joyBaseX,y-joyBaseY)<=joyBaseR*1.4;
-  }
-
-  // ── JOYSTICK — direct listeners on jZone (most reliable) ─────
+  // ── JOYSTICK touch events — attached directly to jZone ────────
   jZone.addEventListener('touchstart',e=>{
-    e.preventDefault();e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     unlockAudio();
+    if(joy.id!==-1)return; // already tracking a finger
     const t=e.changedTouches[0];
-    if(joy.id===-1){
-      joy.active=true;joy.id=t.identifier;
-      joyMove(t.clientX,t.clientY);
-    }
+    joy.id=t.identifier;
+    joy.active=true;
+    // Recalc center fresh right now (zone is guaranteed visible)
+    const c=getJoyCenter();
+    joyCx=c.cx; joyCy=c.cy; joyR=Math.max(30,c.r);
+    // Also store globally for canvas touch handler
+    joyBaseX=joyCx; joyBaseY=joyCy; joyBaseR=joyR;
+    joyMove(t.clientX,t.clientY);
   },{passive:false});
 
   jZone.addEventListener('touchmove',e=>{
-    e.preventDefault();e.stopPropagation();
-    Array.from(e.changedTouches).forEach(t=>{
-      if(t.identifier===joy.id)joyMove(t.clientX,t.clientY);
-    });
+    e.preventDefault();
+    e.stopPropagation();
+    for(const t of e.changedTouches){
+      if(t.identifier===joy.id){
+        joyMove(t.clientX,t.clientY);
+        break;
+      }
+    }
   },{passive:false});
 
   jZone.addEventListener('touchend',e=>{
-    e.preventDefault();e.stopPropagation();
-    Array.from(e.changedTouches).forEach(t=>{
-      if(t.identifier===joy.id)joyReset();
-    });
+    e.preventDefault();
+    e.stopPropagation();
+    for(const t of e.changedTouches){
+      if(t.identifier===joy.id){
+        joyReset();
+        break;
+      }
+    }
   },{passive:false});
 
   jZone.addEventListener('touchcancel',e=>{
@@ -906,81 +916,104 @@ function setupMobileControls(){
     joyReset();
   },{passive:false});
 
-  // ── CANVAS — aim tracking only (not joystick area) ────────────
+  // ── CANVAS touch — aim + fallback joystick ────────────────────
+  // We only use canvas for aim tracking (right side swipe)
+  // Joystick zone handles its own touches via stopPropagation
+
+  function isInJoyZone(x,y){
+    // Use current joyZone bounding rect for accurate check
+    const r=jZone.getBoundingClientRect();
+    return x>=r.left-10&&x<=r.right+10&&y>=r.top-10&&y<=r.bottom+10;
+  }
+  function isInButtonArea(x,y){
+    // Right side action buttons
+    const W=window.innerWidth,H=window.innerHeight;
+    return x>W*0.60&&y>H*0.40;
+  }
+
   canvas.addEventListener('touchstart',e=>{
     e.preventDefault();
     unlockAudio();
-    Array.from(e.changedTouches).forEach(t=>{
+    for(const t of e.changedTouches){
       const x=t.clientX,y=t.clientY;
-      // skip if this touch is in joystick zone — handled by jZone
-      if(inJoyZone(x,y))return;
-      // skip right-side button area
-      const inBtns=x>window.innerWidth*0.62&&y>window.innerHeight*0.42;
-      if(inBtns)return;
-      // aim tracking
+      if(isInJoyZone(x,y))continue;   // handled by jZone
+      if(isInButtonArea(x,y))continue; // handled by buttons
       if(!aimTouch.active){
-        aimTouch.active=true;aimTouch.id=t.identifier;
-        mouseX=x;mouseY=y;
+        aimTouch.active=true;
+        aimTouch.id=t.identifier;
+        mouseX=x; mouseY=y;
       }
-    });
+    }
   },{passive:false});
 
   canvas.addEventListener('touchmove',e=>{
     e.preventDefault();
-    Array.from(e.changedTouches).forEach(t=>{
-      if(inJoyZone(t.clientX,t.clientY)&&t.identifier===joy.id){
-        joyMove(t.clientX,t.clientY);return;
-      }
+    for(const t of e.changedTouches){
       if(t.identifier===aimTouch.id){
-        mouseX=t.clientX;mouseY=t.clientY;
+        mouseX=t.clientX;
+        mouseY=t.clientY;
       }
-    });
+    }
   },{passive:false});
 
   canvas.addEventListener('touchend',e=>{
     e.preventDefault();
-    Array.from(e.changedTouches).forEach(t=>{
+    for(const t of e.changedTouches){
       if(t.identifier===aimTouch.id){
-        aimTouch.active=false;aimTouch.id=-1;
+        aimTouch.active=false;
+        aimTouch.id=-1;
       }
-    });
+    }
   },{passive:false});
 
   canvas.addEventListener('touchcancel',e=>{
     e.preventDefault();
-    aimTouch.active=false;aimTouch.id=-1;
+    aimTouch.active=false;
+    aimTouch.id=-1;
   },{passive:false});
 
   // ── SHOOT button ──────────────────────────────────────────────
   const mobShootBtn=document.getElementById('mob-shoot');
   mobShootBtn.addEventListener('touchstart',e=>{
-    e.preventDefault();e.stopPropagation();
-    mouseDown=true;mobShoot=true;
+    e.preventDefault(); e.stopPropagation();
+    mouseDown=true; mobShoot=true;
     unlockAudio();
     mobShootBtn.classList.add('firing');
   },{passive:false});
   mobShootBtn.addEventListener('touchend',e=>{
-    e.preventDefault();e.stopPropagation();
-    mouseDown=false;mobShoot=false;
+    e.preventDefault(); e.stopPropagation();
+    mouseDown=false; mobShoot=false;
     mobShootBtn.classList.remove('firing');
   },{passive:false});
   mobShootBtn.addEventListener('touchcancel',e=>{
     e.preventDefault();
-    mouseDown=false;mobShoot=false;
+    mouseDown=false; mobShoot=false;
     mobShootBtn.classList.remove('firing');
   },{passive:false});
 
   // ── RELOAD button ─────────────────────────────────────────────
   const mobReloadBtn=document.getElementById('mob-reload');
   mobReloadBtn.addEventListener('touchstart',e=>{
-    e.preventDefault();e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     startReload();
     mobReloadBtn.classList.add('active');
   },{passive:false});
   mobReloadBtn.addEventListener('touchend',e=>{
-    e.preventDefault();e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     mobReloadBtn.classList.remove('active');
   },{passive:false});
+
+  // ── Initial knob center position ──────────────────────────────
+  // Use rAF to wait for layout
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{ joyReset(); });
+  });
+
+  // Recenter on resize / orientation change
+  window.addEventListener('resize',()=>{ joyReset(); });
+  window.addEventListener('orientationchange',()=>{
+    setTimeout(()=>{ joyReset(); },350);
+  });
 }
 
 function updateMobWeapon(){
@@ -999,9 +1032,9 @@ function gameLoop(){
   fpsCounter++;fpsTimer+=dt;
   if(fpsTimer>=1){fps=fpsCounter;fpsCounter=0;fpsTimer=0;}
   if(localReloading&&Date.now()>=localReloadEnd){localReloading=false;localAmmo=WEAPONS[currentWeapon].magSize;updateAmmoHUD();}
-  // Apply mobile joystick to keys (deadzone 0.2)
+  // Apply mobile joystick to movement keys
   if(isMobile()){
-    const DZ=0.2;
+    const DZ=0.18; // deadzone — ignore tiny accidental touches
     keys.w=joy.dy<-DZ;
     keys.s=joy.dy> DZ;
     keys.a=joy.dx<-DZ;
@@ -1181,11 +1214,11 @@ function showHitIndicator(){const el=document.getElementById('hit-indicator');el
 function screenFlash(color,dur){const el=document.getElementById('screen-flash');el.style.background=color;el.style.opacity='1';el.style.transition='opacity 0ms';setTimeout(()=>{el.style.transition='opacity '+dur+'ms ease';el.style.opacity='0';},30);}
 
 // ── Controls (keyboard+mouse+touch) ───────────────────────────────
+let mobileControlsSetup=false;
 function setupControls(){
   if(isMobile()){
-    // Wait for DOM to be ready then setup mobile
-    setTimeout(setupMobileControls,100);
     canvas.style.cursor='default';
+    // Mobile controls set up lazily on first showGameScreen()
   } else {
     canvas.style.cursor='none';
     window.addEventListener('keydown',onKeyDown);
@@ -1346,6 +1379,8 @@ function leaveServer(){
   // Hide mobile controls
   document.getElementById('mobile-controls').classList.remove('show');
   document.getElementById('mob-cheat-btn').classList.remove('show');
+  mobileControlsSetup=false;
+  joy.dx=0;joy.dy=0;joy.active=false;joy.id=-1;
 }
 function openSettings(){document.getElementById('settings-panel').classList.add('open');}
 function closeSettings(){document.getElementById('settings-panel').classList.remove('open');}
@@ -1425,6 +1460,15 @@ function showGameScreen(){
   if(isMobile()){
     document.getElementById('mobile-controls').classList.add('show');
     document.getElementById('mob-cheat-btn').classList.add('show');
+    if(!mobileControlsSetup){
+      mobileControlsSetup=true;
+      // Two rAF = guaranteed after paint, joystick zone is fully laid out
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+          setupMobileControls();
+        });
+      });
+    }
   }
 }
 function startAutoRefresh(){setInterval(()=>{const t=document.getElementById('tab-servers');if(t&&t.classList.contains('active'))refreshServers();},3000);}

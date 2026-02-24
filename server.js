@@ -1,7 +1,11 @@
 /**
- * CS:GO ONLINE - CHEAT  Server v8.0
- * Improvements: password-protected rooms, better hit reg,
- * bug fixes, leaderboard persistence, building tiles (type 5)
+ * CS:GO ONLINE - CHEAT  Server v10.0
+ * + AFK kick: kicked if inactive for entire round (120s)
+ * + Online players tab support (get_online event)
+ * + Password-protected rooms
+ * + Better hit reg
+ * + Leaderboard persistence
+ * + Bug fixes
  */
 
 const express = require('express');
@@ -35,7 +39,38 @@ app.use((req, res, next) => {
   if (req.method === 'OPTIONS') { res.sendStatus(200); return; }
   next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files with proper audio MIME types
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.mp3'))  res.setHeader('Content-Type', 'audio/mpeg');
+    if (filePath.endsWith('.wav'))  res.setHeader('Content-Type', 'audio/wav');
+    if (filePath.endsWith('.ogg'))  res.setHeader('Content-Type', 'audio/ogg');
+    // Allow audio files to be cached
+    if (filePath.match(/\.(mp3|wav|ogg)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Accept-Ranges', 'bytes');
+    }
+  }
+}));
+
+// Explicit route for sound files (backup)
+app.get('/sounds/:file', (req, res) => {
+  const file = req.params.file.replace(/[^a-zA-Z0-9._-]/g, '');
+  const soundPath = path.join(__dirname, 'public', 'sounds', file);
+  if (!fs.existsSync(soundPath)) {
+    res.status(404).json({ error: 'Sound file not found', file });
+    return;
+  }
+  // Determine MIME type
+  let contentType = 'audio/mpeg';
+  if (file.endsWith('.wav')) contentType = 'audio/wav';
+  if (file.endsWith('.ogg')) contentType = 'audio/ogg';
+  res.setHeader('Content-Type', contentType);
+  res.setHeader('Accept-Ranges', 'bytes');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(soundPath);
+});
 app.get('/health', (_req, res) =>
   res.json({ status: 'ok', rooms: rooms.size, uptime: Math.floor(process.uptime()) })
 );
@@ -54,11 +89,15 @@ const MAX_PER_TEAM  = 5;
 const ROUND_TIME    = 120;
 const BETWEEN_ROUND = 10;
 const PLAYER_SPEED  = 3.5;
-const PLAYER_RADIUS = 11;   // slightly smaller for better feel
-const BULLET_SPEED  = 16;   // faster bullets = better hit reg
-const BULLET_RADIUS = 5;    // bullet hitbox radius
+const PLAYER_RADIUS = 11;
+const BULLET_SPEED  = 16;
+const BULLET_RADIUS = 5;
 const RESPAWN_TIME  = 3000;
 const SHIELD_TIME   = 5000;
+
+// AFK: kick if player does nothing for one full round (120 seconds)
+const AFK_TIMEOUT        = ROUND_TIME * 1000; // 120 000 ms = 1 round
+const AFK_CHECK_INTERVAL = 15 * 1000;         // check every 15 seconds
 
 const WEAPONS = {
   pistol: { damage:18, fireRate:380,  magSize:12, reloadTime:1200, spread:0.07, name:'Pistol' },
@@ -67,9 +106,6 @@ const WEAPONS = {
 };
 
 /* ── MAP ────────────────────────────────────────────────────────── */
-// Tile legend:
-// 0 = floor, 1 = solid wall, 2 = T spawn, 3 = CT spawn
-// 4 = cover box, 5 = building wall (decorative solid, drawn differently)
 const MAP_DATA = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,2,2,0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,0,0,0,0,0,0,3,3,3,1],
@@ -103,7 +139,6 @@ const MAP_DATA = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
-// All solid tile types for collision
 function isSolid(t) { return t===1||t===4||t===5; }
 
 function getTile(x,y) {
@@ -114,26 +149,22 @@ function getTile(x,y) {
 
 function canMove(x,y,r) {
   const offsets = [
-    {dx:-r, dy:-r},{dx:r,  dy:-r},{dx:-r, dy:r},{dx:r,  dy:r},
-    {dx:0,  dy:-r},{dx:0,  dy:r}, {dx:-r, dy:0},{dx:r,  dy:0}
+    {dx:-r,dy:-r},{dx:r,dy:-r},{dx:-r,dy:r},{dx:r,dy:r},
+    {dx:0,dy:-r},{dx:0,dy:r},{dx:-r,dy:0},{dx:r,dy:0}
   ];
   for (const o of offsets)
     if (isSolid(getTile(x+o.dx, y+o.dy))) return false;
   return true;
 }
 
-// Ray-cast for line-of-sight (wall check for aimbot)
 function hasLOS(ax,ay,bx,by) {
   const dx=bx-ax, dy=by-ay;
   const dist=Math.sqrt(dx*dx+dy*dy);
   if (!dist) return true;
   const nx=dx/dist, ny=dy/dist;
-  let cx=ax, cy=ay;
-  const steps=Math.ceil(dist/4); // check every 4px
+  const steps=Math.ceil(dist/4);
   for (let i=0;i<steps;i++) {
-    cx+=nx*4; cy+=ny*4;
-    const d2=Math.hypot(cx-ax,cy-ay);
-    if (d2>=dist) break;
+    const cx=ax+nx*4*i, cy=ay+ny*4*i;
     if (isSolid(getTile(cx,cy))) return false;
   }
   return true;
@@ -141,15 +172,16 @@ function hasLOS(ax,ay,bx,by) {
 
 function getSpawnPoints(team) {
   const pts = [];
-  for (let y = 0; y < MAP_H; y++)
-    for (let x = 0; x < MAP_W; x++) {
-      if (team==='T'  && MAP_DATA[y][x]===2) pts.push({x:x*TILE_SIZE+16, y:y*TILE_SIZE+16});
-      if (team==='CT' && MAP_DATA[y][x]===3) pts.push({x:x*TILE_SIZE+16, y:y*TILE_SIZE+16});
+  for (let y=0;y<MAP_H;y++)
+    for (let x=0;x<MAP_W;x++) {
+      if (team==='T'  && MAP_DATA[y][x]===2) pts.push({x:x*TILE_SIZE+16,y:y*TILE_SIZE+16});
+      if (team==='CT' && MAP_DATA[y][x]===3) pts.push({x:x*TILE_SIZE+16,y:y*TILE_SIZE+16});
     }
   return pts;
 }
+
 function randomSpawn(team) {
-  const pts = getSpawnPoints(team);
+  const pts=getSpawnPoints(team);
   if (!pts.length) return {x:64,y:64};
   return pts[Math.floor(Math.random()*pts.length)];
 }
@@ -162,54 +194,103 @@ const BAD_WORDS = [
   'залупа','шлюха','манда','уёбок','курва'
 ];
 const URL_RE = /https?:\/\/|www\.|\.(com|ru|net|org|io|gg)/gi;
+
 function filterMsg(text) {
   let f = text;
-  for (const w of BAD_WORDS) f = f.replace(new RegExp(w,'gi'),'***');
+  for (const w of BAD_WORDS)
+    f = f.replace(new RegExp(w,'gi'),'***');
   return f.replace(URL_RE,'***');
 }
 
 /* ── LEADERBOARD ────────────────────────────────────────────────── */
-const LB_DIR  = path.join(__dirname,'data');
-const LB_PATH = path.join(LB_DIR,'leaderboard.json');
+const LB_DIR = process.env.LB_PATH
+  ? path.dirname(process.env.LB_PATH)
+  : path.join(__dirname, 'data');
+const LB_PATH = process.env.LB_PATH
+  ? process.env.LB_PATH
+  : path.join(LB_DIR, 'leaderboard.json');
 
 function ensureDataDir() {
-  if (!fs.existsSync(LB_DIR))  fs.mkdirSync(LB_DIR,{recursive:true});
-  if (!fs.existsSync(LB_PATH)) fs.writeFileSync(LB_PATH,'[]','utf8');
+  try {
+    if (!fs.existsSync(LB_DIR)) fs.mkdirSync(LB_DIR,{recursive:true});
+    if (!fs.existsSync(LB_PATH)) fs.writeFileSync(LB_PATH,'[]','utf8');
+    console.log(`[LB] Leaderboard path: ${LB_PATH}`);
+  } catch(e) {
+    console.error('[LB] Could not create data dir:', e.message);
+  }
 }
+
 function loadLB() {
   try {
+    if (!fs.existsSync(LB_PATH)) return [];
     const raw = fs.readFileSync(LB_PATH,'utf8');
     const d = JSON.parse(raw);
     return Array.isArray(d) ? d : [];
-  } catch(e) { return []; }
+  } catch(e) {
+    console.error('[LB] Load error:', e.message);
+    return [];
+  }
 }
+
 function saveLB(lb) {
   try {
     const tmp = LB_PATH+'.tmp';
     fs.writeFileSync(tmp, JSON.stringify(lb,null,2), 'utf8');
     fs.renameSync(tmp, LB_PATH);
   } catch(e) {
-    try { fs.writeFileSync(LB_PATH, JSON.stringify(lb,null,2), 'utf8'); } catch(_){}
+    console.error('[LB] Save error (rename failed, trying direct):', e.message);
+    try { fs.writeFileSync(LB_PATH, JSON.stringify(lb,null,2), 'utf8'); }
+    catch(e2) { console.error('[LB] Save error (direct also failed):', e2.message); }
   }
 }
-function updateLB(nick,kills,deaths) {
-  const lb = loadLB();
-  let e = lb.find(x=>x.nickname===nick);
-  if (!e) { e={nickname:nick,kills:0,deaths:0}; lb.push(e); }
-  e.kills+=kills; e.deaths+=deaths;
-  lb.sort((a,b)=>b.kills-a.kills);
-  saveLB(lb.slice(0,50));
+
+function updateLB(nick, kills, deaths) {
+  try {
+    const lb = loadLB();
+    let e = lb.find(x=>x.nickname===nick);
+    if (!e) { e={nickname:nick,kills:0,deaths:0}; lb.push(e); }
+    e.kills  += kills;
+    e.deaths += deaths;
+    lb.sort((a,b)=>b.kills-a.kills);
+    saveLB(lb.slice(0,50));
+  } catch(err) {
+    console.error('[LB] updateLB error:', err.message);
+  }
+}
+
+/* ── ONLINE PLAYERS ─────────────────────────────────────────────── */
+// Returns list of all connected players with their room info
+function getOnlinePlayers() {
+  const result = [];
+  rooms.forEach((state) => {
+    state.players.forEach((player) => {
+      result.push({
+        id:       player.id,       // ← include socket id so client can mark "YOU"
+        nickname: player.nickname,
+        team:     player.team,
+        roomName: state.name,
+        roomId:   state.id,
+        kills:    player.kills,
+        deaths:   player.deaths,
+        ping:     player.ping
+      });
+    });
+  });
+  return result;
 }
 
 /* ── ROOMS ──────────────────────────────────────────────────────── */
 const rooms = new Map();
 let roomIdCounter = 1;
 
+// Track all connected sockets (for lobby/online count)
+const connectedSockets = new Map(); // sid -> { nickname, roomId }
+
 function createRoom(name, password) {
   const id = 'room_'+(roomIdCounter++);
   const state = {
     id, name,
-    password: password||'',        // empty = no password
+    password: password||'',
     players: new Map(),
     bullets: [],
     roundTime: ROUND_TIME,
@@ -231,29 +312,40 @@ function createRoom(name, password) {
   console.log(`[Room+] "${name}" (${id}) pwd=${!!password}`);
   return state;
 }
+
 function deleteRoom(id) {
-  const s=rooms.get(id); if(!s) return;
-  clearInterval(s.tickInterval); clearTimeout(s.emptyTimer);
+  const s=rooms.get(id);
+  if (!s) return;
+  clearInterval(s.tickInterval);
+  clearTimeout(s.emptyTimer);
   rooms.delete(id);
   console.log(`[Room-] ${id}`);
 }
+
 function getRoomList() {
-  return [...rooms.values()].map(r=>{
-    let tC=0,ctC=0;
-    r.players.forEach(p=>p.team==='T'?tC++:ctC++);
-    return {
-      id:r.id, name:r.name,
-      playerCount:r.players.size, maxPlayers:MAX_PLAYERS,
-      tCount:tC, ctCount:ctC,
-      roundNum:r.roundNum, phase:r.roundPhase,
-      hasPassword:!!r.password   // tell client if password protected
-    };
-  });
+  // Only return rooms that have at least 1 player (hide empty rooms)
+  return [...rooms.values()]
+    .filter(r => r.players.size > 0)
+    .map(r=>{
+      let tC=0,ctC=0;
+      r.players.forEach(p=>p.team==='T'?tC++:ctC++);
+      return {
+        id:r.id, name:r.name,
+        playerCount:r.players.size, maxPlayers:MAX_PLAYERS,
+        tCount:tC, ctCount:ctC,
+        roundNum:r.roundNum, phase:r.roundPhase,
+        hasPassword:!!r.password
+      };
+    });
 }
+
 function countTeam(state,team) {
-  let c=0; state.players.forEach(p=>{if(p.team===team)c++;}); return c;
+  let c=0;
+  state.players.forEach(p=>{if(p.team===team)c++;});
+  return c;
 }
-function createPlayer(sid,nickname,team) {
+
+function createPlayer(sid, nickname, team) {
   const sp=randomSpawn(team);
   return {
     id:sid, nickname, team,
@@ -263,6 +355,7 @@ function createPlayer(sid,nickname,team) {
     weapon:'pistol', ammo:WEAPONS.pistol.magSize,
     reloading:false, reloadEnd:0, lastShot:0,
     kills:0, deaths:0, respawnAt:0, ping:0,
+    lastActivity: Date.now(), // AFK tracking
     cheats:{
       aimbot:false, aimbotSmooth:5, aimbotFOV:60,
       antiAim:false, fakeLag:false,
@@ -275,12 +368,44 @@ function createPlayer(sid,nickname,team) {
   };
 }
 
+/* ── AFK CHECKER ─────────────────────────────────────────────────
+   Kick if player has been inactive for ONE FULL ROUND (120s).
+   Activity is reset on: move, shoot, chat, client_activity event.
+   ──────────────────────────────────────────────────────────────── */
+setInterval(()=>{
+  const now = Date.now();
+  rooms.forEach((state, roomId)=>{
+    state.players.forEach((player, sid)=>{
+      if (!player.lastActivity) { player.lastActivity = now; return; }
+      const idle = now - player.lastActivity;
+      if (idle < AFK_TIMEOUT) return;
+
+      console.log(`[AFK] Kicking ${player.nickname} (idle ${Math.round(idle/1000)}s) from room ${roomId}`);
+      const sock = io.sockets.sockets.get(sid);
+      if (sock) {
+        sock.emit('afk_kick', {
+          message: `You were kicked for AFK (inactive for ${Math.round(idle/1000)}s — one full round)`
+        });
+        sock.disconnect(true);
+      } else {
+        state.players.delete(sid);
+        io.to(roomId).emit('chat_message',{
+          nickname:'SYSTEM',
+          text:`${player.nickname} was kicked for AFK`,
+          system:true, t:now
+        });
+      }
+    });
+  });
+}, AFK_CHECK_INTERVAL);
+
 /* ── GAME TICK ──────────────────────────────────────────────────── */
 function gameTick(state,dt,now) {
   if (state.roundPhase==='between') {
     state.roundTime-=dt;
     if (state.roundTime<=0) startNewRound(state,now);
-    broadcastState(state,now); return;
+    broadcastState(state,now);
+    return;
   }
   state.roundTime-=dt;
   if (state.roundTime<=0) { endRound(state,now); return; }
@@ -292,14 +417,14 @@ function gameTick(state,dt,now) {
     }
     if (p.cheats.spinbot) p.spinAngle+=p.cheats.spinSpeed*5*Math.PI/180;
     if (p.reloading&&now>=p.reloadEnd) {
-      p.reloading=false; p.ammo=WEAPONS[p.weapon].magSize;
+      p.reloading=false;
+      p.ammo=WEAPONS[p.weapon].magSize;
     }
   });
 
-  // ── BULLET PROCESSING (improved hit reg) ──────────────────────
+  // Bullet processing with sub-steps to prevent tunnelling
   const kept=[];
   for (const b of state.bullets) {
-    // Sub-step movement for fast bullets — prevents tunnelling
     const steps=3;
     const stepX=Math.cos(b.angle)*BULLET_SPEED/steps;
     const stepY=Math.sin(b.angle)*BULLET_SPEED/steps;
@@ -311,33 +436,33 @@ function gameTick(state,dt,now) {
       if (b.dist>1100) { hitWall=true; break; }
       if (isSolid(getTile(b.x,b.y))) { hitWall=true; break; }
 
-      // Check all enemy players
       state.players.forEach(t=>{
         if (hitPlayer||hitWall) return;
         if (t.id===b.ownerId||!t.alive||t.team===b.ownerTeam) return;
         if (now<t.shieldUntil) return;
-        // Circle-circle collision: bullet radius + player radius
         if (Math.hypot(t.x-b.x, t.y-b.y) < PLAYER_RADIUS+BULLET_RADIUS) {
           hitPlayer=true;
           applyDamage(state, b.ownerId, t, b.damage, b.weaponName, now);
         }
       });
     }
-
     if (!hitWall&&!hitPlayer) kept.push(b);
   }
   state.bullets=kept;
   broadcastState(state,now);
 }
 
-function applyDamage(state,attackerId,target,damage,weaponName,now) {
-  target.hp=Math.max(0, target.hp-damage);
+function applyDamage(state, attackerId, target, damage, weaponName, now) {
+  target.hp=Math.max(0,target.hp-damage);
   if (target.hp>0) return;
-  target.alive=false; target.deaths++;
+  target.alive=false;
+  target.deaths++;
   target.respawnAt=now+RESPAWN_TIME;
-  const att=state.players.get(attackerId); if (!att) return;
+  const att=state.players.get(attackerId);
+  if (!att) return;
   att.kills++;
-  if (att.team==='T') state.tScore++; else state.ctScore++;
+  if (att.team==='T') state.tScore++;
+  else state.ctScore++;
   const kill={killer:att.nickname,victim:target.nickname,weapon:weaponName,t:now};
   state.killFeed.push(kill);
   if (state.killFeed.length>5) state.killFeed.shift();
@@ -352,25 +477,39 @@ function respawnPlayer(p,now) {
   p.hp=100; p.alive=true;
   p.shieldUntil=now+SHIELD_TIME;
   p.ammo=WEAPONS[p.weapon].magSize;
-  p.reloading=false; p.respawnAt=0;
+  p.reloading=false;
+  p.respawnAt=0;
+  p.lastActivity=now; // reset AFK on respawn
 }
+
 function endRound(state,now) {
   let winner='Draw';
   if (state.tScore>state.ctScore) winner='Terrorists';
   else if (state.ctScore>state.tScore) winner='Counter-Terrorists';
-  state.roundPhase='between'; state.roundTime=BETWEEN_ROUND;
+  state.roundPhase='between';
+  state.roundTime=BETWEEN_ROUND;
+  // Reset AFK timers for all players at round end
+  state.players.forEach(p=>{ p.lastActivity=now; });
   io.to(state.id).emit('round_end',{
     winner, tScore:state.tScore, ctScore:state.ctScore, roundNum:state.roundNum
   });
 }
+
 function startNewRound(state,now) {
-  state.roundNum++; state.roundPhase='play'; state.roundTime=ROUND_TIME;
-  state.bullets=[]; state.killFeed=[];
-  state.players.forEach(p=>respawnPlayer(p,now));
+  state.roundNum++;
+  state.roundPhase='play';
+  state.roundTime=ROUND_TIME;
+  state.bullets=[];
+  state.killFeed=[];
+  state.players.forEach(p=>{
+    respawnPlayer(p,now);
+    p.lastActivity=now; // fresh AFK timer each round
+  });
   io.to(state.id).emit('round_start',{
     roundNum:state.roundNum, tScore:state.tScore, ctScore:state.ctScore
   });
 }
+
 function broadcastState(state,now) {
   const players=[];
   state.players.forEach(p=>players.push({
@@ -392,7 +531,7 @@ function broadcastState(state,now) {
     players,
     bullets:state.bullets.map(b=>({x:b.x,y:b.y,trail:b.trail,weaponName:b.weaponName})),
     roundTime:state.roundTime, roundPhase:state.roundPhase,
-    roundNum:state.roundNum,   tScore:state.tScore, ctScore:state.ctScore,
+    roundNum:state.roundNum, tScore:state.tScore, ctScore:state.ctScore,
     killFeed:state.killFeed
   });
 }
@@ -401,67 +540,82 @@ function broadcastState(state,now) {
 io.on('connection', socket => {
   console.log(`[+] ${socket.id} transport=${socket.conn.transport.name}`);
   let currentRoomId = null;
+  let myNickname = '';
 
-  socket.conn.on('upgrade', t => console.log(`[~] ${socket.id} -> ${t.name}`));
+  socket.conn.on('upgrade', t=>console.log(`[~] ${socket.id} -> ${t.name}`));
 
-  socket.on('get_rooms', cb => {
+  socket.on('get_rooms', cb=>{
     if (typeof cb==='function') cb(getRoomList());
   });
-  socket.on('get_leaderboard', cb => {
+
+  socket.on('get_leaderboard', cb=>{
     if (typeof cb==='function') cb(loadLB());
   });
 
-  // Create room — now accepts optional password
-  socket.on('create_room', (data,cb) => {
+  // ── Get all online players across all rooms ───────────────────
+  socket.on('get_online', cb=>{
+    if (typeof cb==='function') {
+      const online = getOnlinePlayers();
+      const totalConnected = io.sockets.sockets.size;
+      // Pass requester's own socket id so client can highlight "YOU"
+      cb({ players: online, totalConnected, mySocketId: socket.id });
+    }
+  });
+
+  socket.on('create_room', (data,cb)=>{
     if (!data||typeof data!=='object') { safe(cb,{error:'Bad data'}); return; }
     const { roomName, nickname, password } = data;
     if (!validNick(nickname)) { safe(cb,{error:'Invalid nickname (3-16 chars)'}); return; }
-    const pwd = (typeof password==='string' ? password.trim() : '').substring(0,20);
-    const state = createRoom((roomName||'Lego Arena').substring(0,32), pwd);
-    currentRoomId = state.id;
+    myNickname = nickname;
+    const pwd=(typeof password==='string'?password.trim():'').substring(0,20);
+    const state=createRoom((roomName||'Lego Arena').substring(0,32), pwd);
+    currentRoomId=state.id;
     socket.join(state.id);
     if (state.emptyTimer) { clearTimeout(state.emptyTimer); state.emptyTimer=null; }
-    socket.emit('map_data',{map:MAP_DATA, tileSize:TILE_SIZE, mapW:MAP_W, mapH:MAP_H});
-    socket.emit('choose_team',{roomId:state.id, tCount:0, ctCount:0});
+    socket.emit('map_data',{map:MAP_DATA,tileSize:TILE_SIZE,mapW:MAP_W,mapH:MAP_H});
+    socket.emit('choose_team',{roomId:state.id,tCount:0,ctCount:0});
     safe(cb,{roomId:state.id});
   });
 
-  // Join room — validates password
-  socket.on('join_room', (data,cb) => {
+  socket.on('join_room', (data,cb)=>{
     if (!data||typeof data!=='object') { safe(cb,{error:'Bad data'}); return; }
     const { roomId, nickname, password } = data;
     if (!validNick(nickname)) { safe(cb,{error:'Invalid nickname'}); return; }
-    const state = rooms.get(roomId);
+    myNickname = nickname;
+    const state=rooms.get(roomId);
     if (!state) { safe(cb,{error:'Room not found'}); return; }
     if (state.players.size>=MAX_PLAYERS) { safe(cb,{error:'Room full'}); return; }
-    // Password check
     if (state.password) {
-      const entered = (typeof password==='string' ? password.trim() : '');
+      const entered=(typeof password==='string'?password.trim():'');
       if (entered!==state.password) { safe(cb,{error:'Wrong password'}); return; }
     }
     if (currentRoomId) doLeave(socket);
-    currentRoomId = roomId;
+    currentRoomId=roomId;
     socket.join(roomId);
     if (state.emptyTimer) { clearTimeout(state.emptyTimer); state.emptyTimer=null; }
     const tC=countTeam(state,'T'), ctC=countTeam(state,'CT');
-    socket.emit('map_data',{map:MAP_DATA, tileSize:TILE_SIZE, mapW:MAP_W, mapH:MAP_H});
-    socket.emit('choose_team',{roomId, tCount:tC, ctCount:ctC});
+    socket.emit('map_data',{map:MAP_DATA,tileSize:TILE_SIZE,mapW:MAP_W,mapH:MAP_H});
+    socket.emit('choose_team',{roomId,tCount:tC,ctCount:ctC});
     safe(cb,{roomId});
   });
 
-  socket.on('select_team', (data,cb) => {
+  socket.on('select_team', (data,cb)=>{
     if (!data||typeof data!=='object') { safe(cb,{error:'Bad data'}); return; }
     const { team, nickname } = data;
     if (!currentRoomId) { safe(cb,{error:'Not in room'}); return; }
-    const state = rooms.get(currentRoomId);
+    const state=rooms.get(currentRoomId);
     if (!state) { safe(cb,{error:'Room gone'}); return; }
     if (state.players.has(socket.id)) { safe(cb,{ok:true}); return; }
-    const t = team==='T'?'T':'CT';
+    const t=team==='T'?'T':'CT';
     if (countTeam(state,t)>=MAX_PER_TEAM) { safe(cb,{error:`Team ${t} full`}); return; }
-    const player = createPlayer(socket.id, nickname||'Player', t);
-    state.players.set(socket.id, player);
+    const nick = nickname || myNickname || 'Player';
+    const player=createPlayer(socket.id, nick, t);
+    myNickname = nick;
+    state.players.set(socket.id,player);
     io.to(currentRoomId).emit('chat_message',{
-      nickname:'SYSTEM', text:`${player.nickname} joined ${t}`, system:true, t:Date.now()
+      nickname:'SYSTEM',
+      text:`${player.nickname} joined ${t}`,
+      system:true, t:Date.now()
     });
     socket.emit('joined_room',{
       roomId:currentRoomId, playerId:socket.id, team:t, nickname:player.nickname
@@ -471,7 +625,7 @@ io.on('connection', socket => {
 
   function doLeave(sock) {
     if (!currentRoomId) return;
-    const state = rooms.get(currentRoomId);
+    const state=rooms.get(currentRoomId);
     if (state) {
       const p=state.players.get(sock.id);
       if (p) {
@@ -489,16 +643,22 @@ io.on('connection', socket => {
 
   socket.on('leave_room', ()=>doLeave(socket));
 
-  socket.on('player_input', input => {
+  socket.on('player_input', input=>{
     if (!input||!currentRoomId) return;
-    const state=rooms.get(currentRoomId); if (!state) return;
-    const player=state.players.get(socket.id); if (!player||!player.alive) return;
+    const state=rooms.get(currentRoomId);
+    if (!state) return;
+    const player=state.players.get(socket.id);
+    if (!player||!player.alive) return;
     const now=Date.now();
     const wep=WEAPONS[player.weapon];
 
-    // Movement with diagonal normalisation
+    // Track any input for AFK detection
+    const moved = input.up||input.down||input.left||input.right||input.shoot;
+    if (moved) player.lastActivity = now;
+
+    // Movement
     let speed=PLAYER_SPEED;
-    if (player.cheats.bhop)    speed=Math.min(PLAYER_SPEED*1.12, speed*1.12);
+    if (player.cheats.bhop)    speed=Math.min(PLAYER_SPEED*1.12,speed*1.12);
     if (player.cheats.spinbot) speed*=0.85;
     const dx=(input.right?1:0)-(input.left?1:0);
     const dy=(input.down?1:0)-(input.up?1:0);
@@ -506,25 +666,26 @@ io.on('connection', socket => {
       const len=Math.sqrt(dx*dx+dy*dy);
       const mx=(dx/len)*speed, my=(dy/len)*speed;
       let nx=player.x, ny=player.y;
-      if (canMove(player.x+mx, player.y,   PLAYER_RADIUS)) nx=player.x+mx;
-      if (canMove(nx,           player.y+my, PLAYER_RADIUS)) ny=player.y+my;
+      if (canMove(player.x+mx,player.y,PLAYER_RADIUS)) nx=player.x+mx;
+      if (canMove(nx,player.y+my,PLAYER_RADIUS)) ny=player.y+my;
+      if (nx!==player.x||ny!==player.y) player.lastActivity=now;
       player.x=nx; player.y=ny;
     }
 
     player.angle=input.angle||0;
 
-    // Sync cheat flags from client
+    // Sync cheat flags
     if (input.cheats&&typeof input.cheats==='object') {
       Object.assign(player.cheats,{
-        antiAim:  !!input.cheats.antiAim,
-        fakeLag:  !!input.cheats.fakeLag,
-        spinbot:  !!input.cheats.spinbot,
-        spinSpeed: Math.max(1,Math.min(20,input.cheats.spinSpeed||10)),
-        bhop:     !!input.cheats.bhop,
-        noRecoil: !!input.cheats.noRecoil,
+        antiAim:!!input.cheats.antiAim,
+        fakeLag:!!input.cheats.fakeLag,
+        spinbot:!!input.cheats.spinbot,
+        spinSpeed:Math.max(1,Math.min(20,input.cheats.spinSpeed||10)),
+        bhop:!!input.cheats.bhop,
+        noRecoil:!!input.cheats.noRecoil,
         radarHack:!!input.cheats.radarHack,
-        skin:  Math.max(0,Math.min(7,input.cheats.skin||0)),
-        trail: Math.max(0,Math.min(3,input.cheats.trail||0))
+        skin:Math.max(0,Math.min(7,input.cheats.skin||0)),
+        trail:Math.max(0,Math.min(3,input.cheats.trail||0))
       });
     }
 
@@ -545,17 +706,19 @@ io.on('connection', socket => {
     if (input.shoot&&!player.reloading&&player.ammo>0&&now-player.lastShot>=wep.fireRate) {
       player.lastShot=now;
       player.ammo--;
-      let spread = player.cheats.noRecoil ? 0.015 : wep.spread;
-      let bAngle = player.angle+(Math.random()-0.5)*spread*2;
+      player.lastActivity=now;
+      let spread=player.cheats.noRecoil?0.015:wep.spread;
+      let bAngle=player.angle+(Math.random()-0.5)*spread*2;
 
-      // Server-side aimbot assist
+      // Server-side aimbot assist with LOS check
       if (input.cheats&&input.cheats.aimbot) {
         const fovRad=Math.max(0.05,(input.cheats.aimbotFOV||60)/2)*Math.PI/180;
         let closest=null, closestDist=Infinity;
         state.players.forEach(t=>{
           if (t.id===socket.id||t.team===player.team||!t.alive) return;
           const ddx=t.x-player.x, ddy=t.y-player.y;
-          const dist=Math.hypot(ddx,ddy); if (dist<1) return;
+          const dist=Math.hypot(ddx,ddy);
+          if (dist<1) return;
           const ta=Math.atan2(ddy,ddx);
           let diff=ta-player.angle;
           while(diff> Math.PI) diff-=Math.PI*2;
@@ -579,6 +742,7 @@ io.on('connection', socket => {
         dist:0,
         trail:player.cheats.trail||0
       });
+
       if (player.ammo===0) {
         player.reloading=true;
         player.reloadEnd=now+wep.reloadTime;
@@ -586,11 +750,16 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('chat_message', text => {
+  socket.on('chat_message', text=>{
     if (!currentRoomId) return;
-    const state=rooms.get(currentRoomId); if (!state) return;
-    const player=state.players.get(socket.id); if (!player) return;
+    const state=rooms.get(currentRoomId);
+    if (!state) return;
+    const player=state.players.get(socket.id);
+    if (!player) return;
     const now=Date.now();
+
+    player.lastActivity=now; // chat counts as activity
+
     if (now<player.chatMutedUntil) {
       socket.emit('chat_message',{
         nickname:'SYSTEM',
@@ -613,7 +782,8 @@ io.on('connection', socket => {
       socket.emit('chat_message',{nickname:'SYSTEM',text:'No duplicate messages',system:true,t:now});
       return;
     }
-    player.chatLog.push(now); player.lastChatMsg=trimmed;
+    player.chatLog.push(now);
+    player.lastChatMsg=trimmed;
     io.to(currentRoomId).emit('chat_message',{
       nickname:player.nickname,
       text:filterMsg(trimmed),
@@ -621,22 +791,32 @@ io.on('connection', socket => {
     });
   });
 
-  socket.on('ping_check', (t,cb) => {
+  socket.on('ping_check', (t,cb)=>{
     if (typeof cb==='function') { try{cb(t);}catch(e){} }
   });
 
-  socket.on('update_ping', ping => {
+  socket.on('update_ping', ping=>{
     if (!currentRoomId) return;
-    const s=rooms.get(currentRoomId); if (!s) return;
+    const s=rooms.get(currentRoomId);
+    if (!s) return;
     const p=s.players.get(socket.id);
     if (p) p.ping=Math.min(999,Math.max(0,ping|0));
   });
 
-  socket.on('disconnect', reason => {
+  socket.on('client_activity', ()=>{
+    if (!currentRoomId) return;
+    const s=rooms.get(currentRoomId);
+    if (!s) return;
+    const p=s.players.get(socket.id);
+    if (p) p.lastActivity=Date.now();
+  });
+
+  socket.on('disconnect', reason=>{
     console.log(`[-] ${socket.id} (${reason})`);
     doLeave(socket);
   });
-  socket.on('error', err => console.error(`[ERR] ${socket.id}:`,err.message));
+
+  socket.on('error', err=>console.error(`[ERR] ${socket.id}:`,err.message));
 });
 
 /* ── HELPERS ────────────────────────────────────────────────────── */
@@ -651,13 +831,13 @@ function validNick(n) {
 
 /* ── START ──────────────────────────────────────────────────────── */
 ensureDataDir();
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
+const PORT=process.env.PORT||3000;
+server.listen(PORT,'0.0.0.0',()=>{
   console.log(`\n╔══════════════════════════════════╗`);
-  console.log(`║  CS:GO ONLINE — CHEAT  v8.0      ║`);
+  console.log(`║  CS:GO ONLINE — CHEAT  v10.0     ║`);
   console.log(`║  Listening on 0.0.0.0:${PORT}       ║`);
   console.log(`╚══════════════════════════════════╝\n`);
 });
 
-process.on('SIGTERM', ()=>server.close(()=>process.exit(0)));
-process.on('SIGINT',  ()=>server.close(()=>process.exit(0)));
+process.on('SIGTERM',()=>server.close(()=>process.exit(0)));
+process.on('SIGINT', ()=>server.close(()=>process.exit(0)));
